@@ -45,7 +45,7 @@ function ProjectCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.55, delay }}
-      className="group relative cursor-pointer overflow-hidden rounded-3xl border border-white/10 bg-ink-card/80 p-7 text-left transition-[transform,border-color] duration-200 will-change-transform hover:border-white/20"
+      className="group relative min-w-[320px] w-[320px] cursor-pointer overflow-hidden rounded-3xl border border-white/10 bg-ink-card/80 p-7 text-left transition-[transform,border-color] duration-200 will-change-transform hover:border-white/20 snap-start"
       style={{ transformStyle: "preserve-3d" }}
     >
       {/* glow */}
@@ -216,11 +216,11 @@ export default function Projects() {
       <div className="container-px">
         <SectionHeading
           eyebrow="Projects"
-          title="Selected work"
-          subtitle="A few projects where design, motion, and engineering came together. Click any card for the full story."
+          title="Current ongoing projects"
+          subtitle="Projects I'm actively building and shipping in 2026. Click any card for the full story."
         />
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide -mx-5 px-5 sm:-mx-8 sm:px-8">
           {projects.map((p, i) => (
             <ProjectCard
               key={p.title}

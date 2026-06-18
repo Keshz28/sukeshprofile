@@ -103,9 +103,24 @@ body {
   }
 }
 
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50%       { opacity: 1;   transform: scale(1.12); }
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+  .animate-pulse-slow {
+    animation: pulse-slow 8s ease-in-out infinite;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
   .grid-bg {
     background-image: linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),

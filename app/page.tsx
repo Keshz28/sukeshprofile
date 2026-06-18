@@ -1,4 +1,5 @@
 import AnimatedBackground from "@/components/ui/AnimatedBackground";
+import ScrollStar from "@/components/ui/ScrollStar";
 import ScrollProgress from "@/components/ScrollProgress";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
@@ -13,6 +14,7 @@ export default function Home() {
   return (
     <>
       <AnimatedBackground />
+      <ScrollStar />
       <ScrollProgress />
       <Navbar />
       <main>

@@ -1,8 +1,5 @@
+# The site is exported to static files locally and committed in `out/`.
+# Netlify just publishes them — no cloud build, no Next runtime needed.
 [build]
-  command = "npm run build"
-
-[build.environment]
-  NODE_VERSION = "22"
-
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
+  command = "echo 'Publishing prebuilt static export from out/'"
+  publish = "out"

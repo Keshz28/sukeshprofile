@@ -1,10 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // Static HTML export — the whole site is static/client-side, so this
+  // produces a self-contained `out/` folder that any host can serve.
+  output: "export",
   images: {
-    remotePatterns: [
-      { protocol: "https", hostname: "**" },
-    ],
+    unoptimized: true,
+    remotePatterns: [{ protocol: "https", hostname: "**" }],
   },
 };
 

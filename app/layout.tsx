@@ -22,9 +22,10 @@ export const metadata: Metadata = {
   description: profile.summary,
   keywords: [
     profile.name,
-    "Front-End Developer",
+    "Full-Stack Developer",
     "UI/UX Designer",
     "Web Designer",
+    "XR Developer",
     "Portfolio",
     "React",
     "Next.js",

@@ -129,6 +129,7 @@ export default function Contact() {
                   placeholder="Tell me about your project or opportunity…"
                   value={form.message}
                   onChange={update("message")}
+                  suppressHydrationWarning
                   className="w-full resize-none rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/30 transition-colors focus:border-blue-glow/60 focus:outline-none focus:ring-2 focus:ring-blue-brand/30"
                 />
               </div>
@@ -147,6 +148,7 @@ export default function Contact() {
               <button
                 type="submit"
                 disabled={status === "sending"}
+                suppressHydrationWarning
                 className="group inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-brand-gradient px-6 py-3.5 text-sm font-semibold text-ink transition-transform duration-200 hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-70"
               >
                 {status === "sending" ? "Opening…" : "Send message"}
@@ -186,6 +188,7 @@ function Field({
         placeholder={placeholder}
         value={value}
         onChange={onChange}
+        suppressHydrationWarning
         className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/30 transition-colors focus:border-blue-glow/60 focus:outline-none focus:ring-2 focus:ring-blue-brand/30"
       />
     </div>

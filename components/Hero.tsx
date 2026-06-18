@@ -52,6 +52,20 @@ export default function Hero() {
       id="home"
       className="relative flex min-h-screen items-center justify-center pt-28"
     >
+      {/* cosmic hero glow — pure CSS, zero JS cost */}
+      <div
+        className="pointer-events-none absolute inset-0 flex items-center justify-center"
+        aria-hidden
+      >
+        <div
+          className="h-[680px] w-[680px] rounded-full animate-pulse-slow"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(124,58,237,0.10) 0%, rgba(79,25,200,0.05) 45%, transparent 70%)",
+          }}
+        />
+      </div>
+
       <div className="container-px">
         <motion.div
           variants={container}
@@ -61,7 +75,7 @@ export default function Hero() {
         >
           {/* availability pill */}
           <motion.div variants={item} className="mb-7 flex justify-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-medium text-white/70">
+            <span className="inline-flex items-center gap-2 rounded-full border border-violet-500/20 bg-violet-950/30 px-4 py-1.5 text-xs font-medium text-white/70 backdrop-blur-sm">
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-glow opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-blue-brand" />
@@ -74,6 +88,7 @@ export default function Hero() {
           <motion.h1
             variants={item}
             className="font-display text-5xl font-bold leading-[1.05] tracking-tight text-white sm:text-6xl md:text-7xl"
+            style={{ textShadow: "0 0 80px rgba(139,92,246,0.30), 0 0 160px rgba(109,40,217,0.15)" }}
           >
             Hi, I&apos;m {profile.name}
           </motion.h1>
