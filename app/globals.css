@@ -4,6 +4,8 @@
 
 :root {
   --bg: #05060a;
+  /* "Nebula" brand gradient — single source for inline gradient fills */
+  --brand: linear-gradient(120deg, #3b82f6 0%, #7c3aed 50%, #ec4899 100%);
 }
 
 * {
@@ -36,8 +38,15 @@ body {
 
 /* Custom selection */
 ::selection {
-  background: rgba(37, 99, 235, 0.4);
+  background: rgba(37, 99, 235, 0.45);
   color: #fff;
+}
+
+/* Hide the native cursor on fine-pointer devices — the custom dot replaces it.
+   Applied by PointerFX so touch/keyboard users keep the system cursor. */
+body.cursor-none,
+body.cursor-none * {
+  cursor: none !important;
 }
 
 /* Slim, branded scrollbar */
@@ -107,6 +116,15 @@ body {
   0%, 100% { opacity: 0.6; transform: scale(1); }
   50%       { opacity: 1;   transform: scale(1.12); }
 }
+
+/* ── Portfolio.dc hero / overlay choreography ───────────────────────────── */
+@keyframes riseIn   { from { transform: translateY(115%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes wordIn   { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes fadeUp   { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes bob      { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
+@keyframes ping-dot { 75%, 100% { transform: scale(2.2); opacity: 0; } }
+@keyframes gradShift{ 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+@keyframes numRoll  { from { transform: translateY(105%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
 @layer utilities {
   .text-balance {

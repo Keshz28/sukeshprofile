@@ -21,10 +21,12 @@ const config: Config = {
       fontFamily: {
         display: ["var(--font-space-grotesk)", "system-ui", "sans-serif"],
         body: ["var(--font-inter)", "system-ui", "sans-serif"],
+        mono: ["var(--font-space-mono)", "ui-monospace", "monospace"],
       },
       backgroundImage: {
+        // "Nebula" accent from the Portfolio.dc design — blue → violet → pink
         "brand-gradient":
-          "linear-gradient(120deg, #2563EB 0%, #6366F1 45%, #EF4444 100%)",
+          "linear-gradient(120deg, #3B82F6 0%, #7C3AED 50%, #EC4899 100%)",
         "radial-glow":
           "radial-gradient(circle at center, rgba(37,99,235,0.25), transparent 60%)",
       },

@@ -1,5 +1,7 @@
 # Kesh Profile — Sukesh Surase Portfolio
 
+localhost: http://localhost:3000 (run in terminal - npm run dev )
+
 A bold, high-energy personal portfolio built with **Next.js 16**, **Tailwind CSS**, and **Framer Motion**. Features glassmorphism UI, an animated aurora background, scroll-driven reveals, an interactive project showcase with shared-layout modals, and a fully responsive layout.
 
 ![Stack](https://img.shields.io/badge/Next.js-16-black) ![Tailwind](https://img.shields.io/badge/Tailwind-3-38BDF8) ![Framer Motion](https://img.shields.io/badge/Framer%20Motion-11-EC4899)

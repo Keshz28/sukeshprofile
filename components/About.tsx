@@ -1,117 +1,124 @@
-﻿"use client";
+"use client";
 
-import { motion } from "framer-motion";
-import { about, profile } from "@/lib/data";
-import SectionHeading from "./ui/SectionHeading";
-import { Code, Megaphone, Palette } from "./ui/Icons";
+import { useEffect, useRef, useState } from "react";
+import { about } from "@/lib/data";
+import Reveal from "./ui/Reveal";
 
-const interestIcon = (i: number) => {
-  const icons = [Code, Palette, Code, Megaphone, Palette, Code];
-  const Icon = icons[i % icons.length];
-  return <Icon className="h-4 w-4" />;
-};
+// Counts up from 0 → target the first time it scrolls into view, preserving any
+// non-numeric suffix ("+", "%").
+function CountUp({ value }: { value: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [display, setDisplay] = useState(value);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const m = value.trim().match(/^(\d+)(.*)$/);
+    if (!m) {
+      setDisplay(value);
+      return;
+    }
+    const target = +m[1];
+    const suffix = m[2] || "";
+    setDisplay("0" + suffix);
+
+    let started = false;
+    const run = () => {
+      const t0 = performance.now();
+      const dur = 1300;
+      const step = (t: number) => {
+        const p = Math.min(1, (t - t0) / dur);
+        const e = 1 - Math.pow(1 - p, 3);
+        setDisplay(Math.round(e * target) + suffix);
+        if (p < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    };
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((x) => {
+          if (x.isIntersecting && !started) {
+            started = true;
+            run();
+            io.disconnect();
+          }
+        });
+      },
+      { threshold: 0.4 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [value]);
+
+  return (
+    <div
+      ref={ref}
+      className="text-gradient font-display text-[clamp(2.2rem,6vw,4rem)] font-bold leading-none"
+    >
+      {display}
+    </div>
+  );
+}
 
 export default function About() {
   return (
-    <section id="about" className="relative py-28">
-      <div className="container-px">
-        <SectionHeading
-          eyebrow="About"
-          title="Where code meets creativity"
-          subtitle="A developer's precision with a designer's eye and a storyteller's instinct."
-        />
+    <section
+      id="about"
+      className="relative z-[5] mx-auto max-w-[1200px] px-[clamp(20px,5vw,72px)] py-[clamp(70px,12vh,140px)]"
+    >
+      <Reveal className="mb-6 font-mono text-xs tracking-[0.2em] text-blue-glow">
+        ( 01 — ABOUT )
+      </Reveal>
 
-        <div className="grid items-start gap-8 lg:grid-cols-[1.4fr_1fr]">
-          {/* Text */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.6 }}
-            className="glass rounded-3xl p-7 sm:p-9"
-          >
-            <div className="space-y-5">
-              {about.paragraphs.map((p, i) => (
-                <p
-                  key={i}
-                  className="text-[15px] leading-relaxed text-white/70"
-                >
-                  {p}
-                </p>
-              ))}
-            </div>
+      <div className="grid gap-[clamp(32px,6vw,80px)] [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]">
+        <Reveal>
+          <h2 className="m-0 font-display text-[clamp(2rem,5vw,3.6rem)] font-bold leading-[1.05] tracking-[-0.02em]">
+            Building across the{" "}
+            <span className="bg-brand-gradient bg-clip-text text-transparent">
+              entire stack.
+            </span>
+          </h2>
+        </Reveal>
 
-            {/* Interests */}
-            <div className="mt-8">
-              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-white/40">
-                What I do
-              </p>
-              <div className="flex flex-wrap gap-2.5">
-                {about.interests.map((interest, i) => (
-                  <motion.span
-                    key={interest}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.3, delay: i * 0.05 }}
-                    className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3.5 py-1.5 text-sm text-white/75 transition-colors duration-200 hover:border-white/25 hover:text-white"
-                  >
-                    <span className="text-blue-glow">{interestIcon(i)}</span>
-                    {interest}
-                  </motion.span>
-                ))}
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Stats + portrait card */}
-          <div className="grid gap-5">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="gradient-border glass-strong relative overflow-hidden rounded-3xl p-7"
+        <Reveal delay={0.12}>
+          {about.paragraphs.map((p, i) => (
+            <p
+              key={i}
+              className={`mb-[18px] text-pretty text-[clamp(1rem,1.4vw,1.12rem)] leading-[1.75] last:mb-0 ${
+                i === 0 ? "text-white/[0.72]" : "text-white/[0.6]"
+              }`}
             >
-              {/* monogram */}
-              <div className="mb-5 flex items-center gap-4">
-                <div className="grid h-16 w-16 place-items-center rounded-2xl bg-brand-gradient font-display text-xl font-bold text-ink">
-                  {profile.initials}
-                </div>
-                <div>
-                  <p className="font-display text-lg font-semibold text-white">
-                    {profile.name}
-                  </p>
-                  <p className="text-sm text-white/50">{profile.roles[0]}</p>
-                </div>
-              </div>
-              <p className="text-sm leading-relaxed text-white/60">
-                {profile.summary}
-              </p>
-            </motion.div>
+              {p}
+            </p>
+          ))}
 
-            <div className="grid grid-cols-3 gap-4">
-              {about.stats.map((stat, i) => (
-                <motion.div
-                  key={stat.label}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: 0.15 + i * 0.1 }}
-                  className="glass rounded-2xl p-4 text-center"
-                >
-                  <p className="text-gradient font-display text-2xl font-bold">
-                    {stat.value}
-                  </p>
-                  <p className="mt-1 text-[11px] leading-tight text-white/50">
-                    {stat.label}
-                  </p>
-                </motion.div>
-              ))}
+          <div className="mt-6 flex flex-wrap gap-2">
+            {about.interests.map((it) => (
+              <span
+                key={it}
+                className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-[7px] font-mono text-[11px] tracking-[0.04em] text-white/[0.72]"
+              >
+                {it}
+              </span>
+            ))}
+          </div>
+        </Reveal>
+      </div>
+
+      <Reveal
+        delay={0.2}
+        className="mt-[clamp(40px,7vh,72px)] grid grid-cols-3 gap-[clamp(12px,3vw,28px)]"
+      >
+        {about.stats.map((s) => (
+          <div key={s.label} className="border-t border-white/10 pt-[18px]">
+            <CountUp value={s.value} />
+            <div className="mt-2.5 font-mono text-[11px] tracking-[0.08em] text-white/55">
+              {s.label}
             </div>
           </div>
-        </div>
-      </div>
+        ))}
+      </Reveal>
     </section>
   );
 }

@@ -1,187 +1,166 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { profile } from "@/lib/data";
-import { ArrowDown, ArrowUpRight, Download, GitHub, LinkedIn } from "./ui/Icons";
+import { useClock } from "./ui/useClock";
 import Magnetic from "./ui/Magnetic";
 
-const container = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
-};
-const item = {
-  hidden: { opacity: 0, y: 24 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.21, 0.5, 0.3, 1] } },
-};
-
 function RoleRotator() {
-  const [index, setIndex] = useState(0);
+  const [i, setI] = useState(0);
   useEffect(() => {
     const id = setInterval(
-      () => setIndex((i) => (i + 1) % profile.roles.length),
-      2400
+      () => setI((p) => (p + 1) % profile.roles.length),
+      2600
     );
     return () => clearInterval(id);
   }, []);
 
   return (
-    <span className="relative inline-grid h-[1.3em] overflow-hidden align-bottom">
-      {profile.roles.map((role, i) => (
-        <motion.span
-          key={role}
-          className="col-start-1 row-start-1 text-gradient"
-          initial={false}
-          animate={
-            i === index
-              ? { y: "0%", opacity: 1 }
-              : { y: i < index ? "-110%" : "110%", opacity: 0 }
-          }
-          transition={{ duration: 0.5, ease: "easeInOut" }}
-        >
-          {role}
-        </motion.span>
-      ))}
+    <span className="inline-block overflow-hidden align-bottom">
+      <span
+        key={profile.roles[i]}
+        className="text-gradient inline-block"
+        style={{ animation: "wordIn .55s cubic-bezier(.16,1,.3,1) both" }}
+      >
+        {profile.roles[i]}
+      </span>
     </span>
   );
 }
 
 export default function Hero() {
+  const { scrollY } = useScroll();
+  const heroY = useTransform(scrollY, [0, 600], [0, 60]);
+  const clock = useClock();
+
   return (
     <section
       id="home"
-      className="relative flex min-h-screen items-center justify-center pt-28"
+      className="relative z-[5] flex min-h-screen flex-col justify-center px-[clamp(20px,5vw,72px)] pb-[70px] pt-[130px] text-center"
     >
-      {/* cosmic hero glow — pure CSS, zero JS cost */}
-      <div
-        className="pointer-events-none absolute inset-0 flex items-center justify-center"
-        aria-hidden
-      >
+      <div className="mx-auto w-full max-w-[1100px]">
+        {/* availability badge */}
         <div
-          className="h-[680px] w-[680px] rounded-full animate-pulse-slow"
-          style={{
-            background:
-              "radial-gradient(circle, rgba(124,58,237,0.10) 0%, rgba(79,25,200,0.05) 45%, transparent 70%)",
-          }}
-        />
+          className="mb-[clamp(20px,4vh,40px)] inline-flex items-center gap-2.5 rounded-full border border-blue-glow/25 bg-blue-brand/[0.12] px-4 py-[7px] font-mono text-xs tracking-[0.06em] text-white/[0.78] backdrop-blur-sm"
+          style={{ animation: "fadeUp 1s .1s both" }}
+        >
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-glow opacity-75" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-blue-brand" />
+          </span>
+          Open to opportunities · Available worldwide
+        </div>
+
+        {/* name */}
+        <motion.h1
+          style={{ y: heroY }}
+          className="m-0 font-display text-[clamp(3.2rem,12.5vw,12rem)] font-bold uppercase leading-[0.9] tracking-[-0.03em] will-change-transform"
+        >
+          <span
+            className="block"
+            style={{ textShadow: "0 0 80px rgba(37,99,235,0.30), 0 0 160px rgba(99,102,241,0.15)" }}
+          >
+            <span className="block overflow-hidden">
+              <span
+                className="inline-block"
+                style={{ animation: "riseIn 1s .15s both" }}
+              >
+                Sukesh
+              </span>
+            </span>
+            <span className="block overflow-hidden">
+              <span
+                className="bg-brand-gradient inline-block bg-clip-text text-transparent"
+                style={{
+                  backgroundSize: "220% 220%",
+                  animation:
+                    "riseIn 1s .3s both, gradShift 7s 1.3s ease-in-out infinite",
+                }}
+              >
+                Surase
+              </span>
+            </span>
+          </span>
+        </motion.h1>
+
+        {/* role rotator */}
+        <div
+          className="mt-[clamp(18px,3.5vh,38px)] flex flex-wrap items-baseline justify-center gap-3 font-display text-[clamp(1.1rem,3.2vw,2.1rem)] font-semibold"
+          style={{ animation: "fadeUp 1s .5s both" }}
+        >
+          <span className="text-white/55">I&apos;m a</span>
+          <RoleRotator />
+        </div>
+
+        {/* tagline */}
+        <p className="mx-auto mt-[clamp(20px,4vh,34px)] max-w-[660px] text-pretty text-[clamp(1rem,1.5vw,1.2rem)] leading-[1.65] text-white/[0.62]">
+          {profile.tagline}
+        </p>
+
+        {/* CTAs */}
+        <div
+          className="mt-[clamp(28px,5vh,46px)] flex flex-wrap justify-center gap-3.5"
+          style={{ animation: "fadeUp 1s .7s both" }}
+        >
+          <Magnetic>
+            <a
+              href="#projects"
+              data-cursor="hover"
+              className="inline-flex items-center gap-2 rounded-[14px] bg-brand-gradient px-[26px] py-3.5 font-display text-[15px] font-bold text-ink"
+            >
+              View Projects ↗
+            </a>
+          </Magnetic>
+          <Magnetic>
+            <a
+              href={profile.resumeUrl}
+              download
+              data-cursor="hover"
+              className="inline-flex items-center gap-2 rounded-[14px] border border-white/15 bg-white/5 px-[26px] py-3.5 font-display text-[15px] font-semibold text-white backdrop-blur-md"
+            >
+              ↓ Download Resume
+            </a>
+          </Magnetic>
+        </div>
+
+        {/* socials */}
+        <div
+          className="mt-[clamp(26px,4vh,38px)] flex flex-wrap justify-center gap-2.5"
+          style={{ animation: "fadeUp 1s .85s both" }}
+        >
+          <SocialPill href={profile.socials.github}>GitHub</SocialPill>
+          <SocialPill href={profile.socials.linkedin}>LinkedIn</SocialPill>
+          <SocialPill href={`mailto:${profile.email}`}>{profile.email}</SocialPill>
+        </div>
       </div>
 
-      <div className="container-px">
-        <motion.div
-          variants={container}
-          initial="hidden"
-          animate="show"
-          className="mx-auto max-w-4xl text-center"
-        >
-          {/* availability pill */}
-          <motion.div variants={item} className="mb-7 flex justify-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-violet-500/20 bg-violet-950/30 px-4 py-1.5 text-xs font-medium text-white/70 backdrop-blur-sm">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-glow opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-blue-brand" />
-              </span>
-              Open to opportunities · {profile.location}
-            </span>
-          </motion.div>
-
-          {/* name */}
-          <motion.h1
-            variants={item}
-            className="font-display text-5xl font-bold leading-[1.05] tracking-tight text-white sm:text-6xl md:text-7xl"
-            style={{ textShadow: "0 0 80px rgba(139,92,246,0.30), 0 0 160px rgba(109,40,217,0.15)" }}
-          >
-            Hi, I&apos;m {profile.name}
-          </motion.h1>
-
-          {/* role rotator */}
-          <motion.p
-            variants={item}
-            className="mt-4 font-display text-2xl font-semibold sm:text-3xl md:text-4xl"
-          >
-            <RoleRotator />
-          </motion.p>
-
-          {/* tagline */}
-          <motion.p
-            variants={item}
-            className="mx-auto mt-6 max-w-2xl text-balance text-base leading-relaxed text-white/60 sm:text-lg"
-          >
-            {profile.tagline}
-          </motion.p>
-
-          {/* CTAs */}
-          <motion.div
-            variants={item}
-            className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row"
-          >
-            <Magnetic>
-              <a
-                href="#projects"
-                className="group inline-flex cursor-pointer items-center gap-2 rounded-xl bg-brand-gradient px-6 py-3.5 text-sm font-semibold text-ink transition-transform duration-200 hover:scale-[1.03]"
-              >
-                View Projects
-                <ArrowUpRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </a>
-            </Magnetic>
-
-            <Magnetic>
-              <a
-                href={profile.resumeUrl}
-                download
-                className="group inline-flex cursor-pointer items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur-md transition-colors duration-200 hover:bg-white/10"
-              >
-                <Download className="h-4 w-4 transition-transform duration-200 group-hover:translate-y-0.5" />
-                Download Resume
-              </a>
-            </Magnetic>
-          </motion.div>
-
-          {/* socials */}
-          <motion.div
-            variants={item}
-            className="mt-10 flex items-center justify-center gap-3"
-          >
-            <SocialIcon href={profile.socials.github} label="GitHub">
-              <GitHub className="h-5 w-5" />
-            </SocialIcon>
-            <SocialIcon href={profile.socials.linkedin} label="LinkedIn">
-              <LinkedIn className="h-5 w-5" />
-            </SocialIcon>
-            <SocialIcon href={`mailto:${profile.email}`} label="Email">
-              <span className="text-xs font-medium">{profile.email}</span>
-            </SocialIcon>
-          </motion.div>
-        </motion.div>
+      {/* top-right meta + live clock */}
+      <div className="absolute right-[clamp(20px,5vw,72px)] top-[clamp(100px,13vh,140px)] text-right font-mono text-[11px] leading-[1.9] tracking-[0.14em] text-white/40">
+        <div>PORTFOLIO / 2026</div>
+        <div className="text-blue-glow tabular-nums">{clock}</div>
       </div>
 
       {/* scroll hint */}
-      <motion.a
+      <a
         href="#about"
         aria-label="Scroll to about"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.2 }}
-        className="absolute bottom-8 left-1/2 hidden -translate-x-1/2 cursor-pointer flex-col items-center gap-2 text-white/40 transition-colors hover:text-white/80 sm:flex"
+        className="absolute bottom-[30px] left-1/2 flex -translate-x-1/2 flex-col items-center gap-[7px] font-mono text-[10px] tracking-[0.25em] text-white/50"
       >
-        <span className="text-[11px] uppercase tracking-[0.25em]">Scroll</span>
-        <motion.span
-          animate={{ y: [0, 6, 0] }}
-          transition={{ duration: 1.6, repeat: Infinity }}
-        >
-          <ArrowDown className="h-4 w-4" />
-        </motion.span>
-      </motion.a>
+        SCROLL
+        <span className="inline-block" style={{ animation: "bob 1.8s infinite" }}>
+          ↓
+        </span>
+      </a>
     </section>
   );
 }
 
-function SocialIcon({
+function SocialPill({
   href,
-  label,
   children,
 }: {
   href: string;
-  label: string;
   children: React.ReactNode;
 }) {
   return (
@@ -189,8 +168,8 @@ function SocialIcon({
       href={href}
       target={href.startsWith("http") ? "_blank" : undefined}
       rel="noopener noreferrer"
-      aria-label={label}
-      className="inline-flex h-11 cursor-pointer items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 text-white/70 transition-colors duration-200 hover:border-white/20 hover:text-white"
+      data-cursor="hover"
+      className="inline-flex h-[42px] items-center rounded-xl border border-white/10 bg-white/[0.04] px-4 font-mono text-xs tracking-[0.06em] text-white/[0.78] transition-colors duration-200 hover:border-white/25 hover:text-white"
     >
       {children}
     </a>

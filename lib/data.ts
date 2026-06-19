@@ -113,6 +113,8 @@ export const certifications: Certification[] = [
 export type Education = {
   degree: string;
   institution: string;
+  /** Short tier label shown on the credential card (e.g. "Degree"). */
+  kind: string;
   year?: string;
   status: "Completed" | "In Progress";
   highlights: string[];
@@ -121,26 +123,29 @@ export type Education = {
 
 export const education: Education[] = [
   {
-    degree: "Sijil Pelajaran Malaysia (SPM)",
-    institution: "SMK Bukit Sentosa",
-    status: "Completed",
-    highlights: ["Malaysian O-Level Equivalent", "National Examination"],
-    accent: "azure",
+    degree: "Bachelor of Information Technology (Hons.)",
+    institution: "HELP University",
+    kind: "Degree",
+    year: "2026",
+    status: "In Progress",
+    highlights: ["Information Technology", "Software Development", "UI/UX Design"],
+    accent: "blue",
   },
   {
     degree: "Sijil Tinggi Persekolahan Malaysia (STPM)",
     institution: "SMK Sungai Choh",
+    kind: "Pre-University",
     status: "Completed",
     highlights: ["Malaysian A-Level Equivalent", "Form 6"],
     accent: "azure",
   },
   {
-    degree: "Bachelor of Information Technology (Hons.)",
-    institution: "HELP University",
-    year: "2026",
-    status: "In Progress",
-    highlights: ["Information Technology", "Software Development", "UI/UX Design"],
-    accent: "blue",
+    degree: "Sijil Pelajaran Malaysia (SPM)",
+    institution: "SMK Bukit Sentosa",
+    kind: "Secondary",
+    status: "Completed",
+    highlights: ["Malaysian O-Level Equivalent", "National Examination"],
+    accent: "azure",
   },
 ];
 

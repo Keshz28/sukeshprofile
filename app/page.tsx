@@ -1,31 +1,39 @@
 import AnimatedBackground from "@/components/ui/AnimatedBackground";
-import ScrollStar from "@/components/ui/ScrollStar";
+import Starfield from "@/components/ui/Starfield";
+import PointerFX from "@/components/ui/PointerFX";
+import Grain from "@/components/ui/Grain";
+import SectionCounter from "@/components/ui/SectionCounter";
 import ScrollProgress from "@/components/ScrollProgress";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
+import Marquee from "@/components/Marquee";
 import About from "@/components/About";
 import Skills from "@/components/Skills";
-import Certifications from "@/components/Certifications";
 import Projects from "@/components/Projects";
+import Certifications from "@/components/Certifications";
 import Contact from "@/components/Contact";
-import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
     <>
+      {/* fixed background + overlay stack */}
       <AnimatedBackground />
-      <ScrollStar />
+      <Starfield />
+      <PointerFX />
+      <Grain />
       <ScrollProgress />
+      <SectionCounter />
+
       <Navbar />
       <main>
         <Hero />
+        <Marquee />
         <About />
         <Skills />
-        <Certifications />
         <Projects />
+        <Certifications />
         <Contact />
       </main>
-      <Footer />
     </>
   );
 }

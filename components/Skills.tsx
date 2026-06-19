@@ -1,97 +1,63 @@
-﻿"use client";
+"use client";
 
 import { motion } from "framer-motion";
 import { skillCategories, type SkillCategory } from "@/lib/data";
-import SectionHeading from "./ui/SectionHeading";
-import { Code, Megaphone, Palette } from "./ui/Icons";
+import Reveal from "./ui/Reveal";
+import TiltCard from "./ui/TiltCard";
 
-const accentMap = {
-  blue: {
-    bar: "from-blue-brand to-blue-glow",
-    text: "text-blue-glow",
-    ring: "bg-blue-brand/15 text-blue-glow",
-  },
-  azure: {
-    bar: "from-azure-brand to-azure-glow",
-    text: "text-azure-glow",
-    ring: "bg-azure-brand/15 text-azure-glow",
-  },
-  red: {
-    bar: "from-red-brand to-red-glow",
-    text: "text-red-glow",
-    ring: "bg-red-brand/15 text-red-glow",
-  },
-};
+const EASE = [0.16, 1, 0.3, 1] as const;
 
-const catIcon = {
-  blue: Code,
-  azure: Palette,
-  red: Megaphone,
-};
-
-function CategoryCard({ cat, delay }: { cat: SkillCategory; delay: number }) {
-  const a = accentMap[cat.accent];
-  const Icon = catIcon[cat.accent];
-
+function SkillCard({ cat, delay }: { cat: SkillCategory; delay: number }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.55, delay }}
-      className="glass group rounded-3xl p-7 transition-colors duration-300 hover:bg-white/[0.06]"
-    >
-      <div className="mb-6 flex items-center gap-3">
-        <span className={`grid h-11 w-11 place-items-center rounded-xl ${a.ring}`}>
-          <Icon className="h-5 w-5" />
-        </span>
-        <h3 className="font-display text-lg font-semibold text-white">
+    <Reveal delay={delay}>
+      <TiltCard className="rounded-[18px] border border-white/10 bg-white/[0.035] p-6 backdrop-blur-[10px]">
+        <h3 className="mb-5 font-display text-[18px] font-semibold text-white">
           {cat.title}
         </h3>
-      </div>
 
-      <div className="space-y-4">
-        {cat.skills.map((skill, i) => (
-          <div key={skill.name}>
-            <div className="mb-1.5 flex items-center justify-between text-sm">
-              <span className="text-white/75">{skill.name}</span>
-              <span className={`font-medium ${a.text}`}>{skill.level}%</span>
+        {cat.skills.map((sk, i) => (
+          <div key={sk.name} className="mb-[15px] last:mb-0">
+            <div className="mb-[7px] flex justify-between font-mono text-xs text-white/70">
+              <span>{sk.name}</span>
+              <span className="text-white/40">{sk.level}</span>
             </div>
-            <div className="h-2 overflow-hidden rounded-full bg-white/[0.06]">
+            <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.08]">
               <motion.div
-                className={`h-full rounded-full bg-gradient-to-r ${a.bar}`}
+                className="h-full rounded-full bg-brand-gradient"
                 initial={{ width: 0 }}
-                whileInView={{ width: `${skill.level}%` }}
+                whileInView={{ width: `${sk.level}%` }}
                 viewport={{ once: true }}
-                transition={{
-                  duration: 1,
-                  delay: delay + 0.2 + i * 0.08,
-                  ease: "easeOut",
-                }}
+                transition={{ duration: 1.2, delay: delay + 0.1 + i * 0.06, ease: EASE }}
               />
             </div>
           </div>
         ))}
-      </div>
-    </motion.div>
+      </TiltCard>
+    </Reveal>
   );
 }
 
 export default function Skills() {
   return (
-    <section id="skills" className="relative py-28">
-      <div className="container-px">
-        <SectionHeading
-          eyebrow="Skills"
-          title="A versatile toolkit"
-          subtitle="Three disciplines, one cohesive craft — engineering, design, and communication."
-        />
-
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {skillCategories.map((cat, i) => (
-            <CategoryCard key={cat.title} cat={cat} delay={i * 0.12} />
-          ))}
+    <section
+      id="skills"
+      className="relative z-[5] mx-auto max-w-[1200px] px-[clamp(20px,5vw,72px)] py-[clamp(60px,10vh,120px)]"
+    >
+      <Reveal className="mb-[clamp(28px,5vh,52px)] flex flex-wrap items-end justify-between gap-3.5">
+        <div>
+          <div className="mb-4 font-mono text-xs tracking-[0.2em] text-blue-glow">
+            ( 02 — SKILLS )
+          </div>
+          <h2 className="m-0 font-display text-[clamp(2rem,5.5vw,4rem)] font-bold leading-[0.95] tracking-[-0.02em]">
+            What I bring
+          </h2>
         </div>
+      </Reveal>
+
+      <div className="grid gap-[18px] [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))]">
+        {skillCategories.map((cat, i) => (
+          <SkillCard key={cat.title} cat={cat} delay={i * 0.08} />
+        ))}
       </div>
     </section>
   );

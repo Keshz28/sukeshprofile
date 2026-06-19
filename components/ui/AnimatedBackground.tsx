@@ -77,6 +77,14 @@ export default function AnimatedBackground() {
 
   return (
     <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+      {/* static cosmic backdrop — shows before the video loads / if it fails */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(120% 90% at 70% 10%, rgba(99,102,241,0.22), transparent 55%), radial-gradient(90% 80% at 15% 90%, rgba(236,72,153,0.16), transparent 55%), #05060A",
+        }}
+      />
       <video
         ref={aRef}
         autoPlay
@@ -98,8 +106,14 @@ export default function AnimatedBackground() {
       >
         <source src="/space.mp4" type="video/mp4" />
       </video>
-      {/* dark overlay so text stays legible over bright nebula regions */}
-      <div className="absolute inset-0 bg-[#020510]/52" />
+      {/* dark gradient so text stays legible over bright nebula regions */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(2,5,16,0.55), rgba(2,5,16,0.72))",
+        }}
+      />
     </div>
   );
 }
