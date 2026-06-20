@@ -35,46 +35,50 @@ export default function Navbar() {
   }, []);
 
   return (
-    <motion.nav
+    // Full-width fixed header that flex-centers the pill — reliable centering
+    // that can't drift like left-1/2 + translate once the content gets wide.
+    <motion.header
       initial={{ y: -28, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-      className="glass fixed left-1/2 top-[18px] z-50 flex max-w-[calc(100%-24px)] -translate-x-1/2 items-center gap-[clamp(10px,2vw,22px)] rounded-full py-2.5 pl-4 pr-3.5"
+      className="fixed inset-x-0 top-[18px] z-50 flex justify-center px-3"
     >
-      {/* brand */}
-      <a
-        href="#home"
-        data-cursor="hover"
-        className="flex items-center gap-2.5"
-        aria-label={`${profile.name} — home`}
-      >
-        <span className="grid h-7 w-7 place-items-center rounded-lg bg-brand-gradient font-display text-[13px] font-bold text-ink">
-          {profile.initials}
-        </span>
-        <span className="hidden font-display text-sm font-semibold tracking-[0.01em] text-white sm:inline">
-          {profile.name}
-        </span>
-      </a>
+      <nav className="glass flex max-w-full items-center gap-2 overflow-hidden rounded-full py-2 pl-3 pr-3 sm:gap-[clamp(10px,2vw,22px)] sm:py-2.5 sm:pl-4 sm:pr-3.5">
+        {/* brand */}
+        <a
+          href="#home"
+          data-cursor="hover"
+          className="flex shrink-0 items-center gap-2 sm:gap-2.5"
+          aria-label={`${profile.name} — home`}
+        >
+          <span className="grid h-7 w-7 place-items-center rounded-lg bg-brand-gradient font-display text-[13px] font-bold text-ink">
+            {profile.initials}
+          </span>
+          <span className="hidden font-display text-sm font-semibold tracking-[0.01em] text-white sm:inline">
+            {profile.name}
+          </span>
+        </a>
 
-      <span className="h-[18px] w-px bg-white/15" />
+        <span className="h-[18px] w-px shrink-0 bg-white/15" />
 
-      {/* links */}
-      <div className="flex gap-[clamp(8px,1.4vw,18px)] font-mono text-xs tracking-[0.08em]">
-        {LINKS.map((link) => (
-          <a
-            key={link.href}
-            href={link.href}
-            data-cursor="hover"
-            className={`transition-colors duration-200 ${
-              active === link.href
-                ? "text-white"
-                : "text-white/70 hover:text-white"
-            }`}
-          >
-            {link.label}
-          </a>
-        ))}
-      </div>
-    </motion.nav>
+        {/* links */}
+        <div className="flex gap-2.5 font-mono text-[11px] tracking-[0.03em] sm:gap-[clamp(8px,1.4vw,18px)] sm:text-xs sm:tracking-[0.08em]">
+          {LINKS.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              data-cursor="hover"
+              className={`whitespace-nowrap transition-colors duration-200 ${
+                active === link.href
+                  ? "text-white"
+                  : "text-white/70 hover:text-white"
+              }`}
+            >
+              {link.label}
+            </a>
+          ))}
+        </div>
+      </nav>
+    </motion.header>
   );
 }
