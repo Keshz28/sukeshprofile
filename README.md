@@ -31,47 +31,74 @@ KeshProfile/
 ├── app/
 │   ├── globals.css        # Tailwind layers + glass / gradient utilities
 │   ├── layout.tsx         # Fonts (Space Grotesk + Inter), SEO metadata
-│   └── page.tsx           # Assembles all sections
+│   ├── page.tsx           # Assembles all sections
+│   └── studio/            # 🔒 Private, local-only Content Studio (see below)
 ├── components/
-│   ├── Navbar.tsx         # Floating glass nav, scroll spy, mobile menu
+│   ├── Navbar.tsx         # Floating glass nav, scroll spy
 │   ├── Hero.tsx           # Animated intro + role rotator + CTAs
 │   ├── About.tsx          # Bio, interests, stats
 │   ├── Skills.tsx         # Animated skill bars (3 categories)
-│   ├── Projects.tsx       # Tilt cards + shared-layout detail modal
-│   ├── Contact.tsx        # Contact form + info
-│   ├── Footer.tsx
+│   ├── AiWorkflow.tsx     # "AI-augmented, human-led" tool cards
+│   ├── Projects.tsx       # Interactive project list + cursor preview
+│   ├── Certifications.tsx # Credentials (certs + education)
+│   ├── Contact.tsx        # Big CTA + prominent clickable contacts block
 │   ├── ScrollProgress.tsx # Top gradient progress bar
-│   └── ui/                # SectionHeading, Magnetic, AnimatedBackground, Icons
+│   ├── studio/            # Content Studio form primitives + save helpers
+│   └── ui/                # Reveal, Magnetic, TiltCard, backgrounds, etc.
 ├── lib/
-│   └── data.ts            # ⭐ ALL site content lives here
+│   ├── content.json       # ⭐ ALL site content lives here (edit this)
+│   └── data.ts            # Types + typed re-exports of content.json
 └── public/
     └── resume.pdf         # ⭐ Replace with the real resume
 ```
 
 ---
 
-## ✏️ How to update content (no code knowledge needed)
+## ✏️ How to update content
 
-Everything you'd want to change — name, summary, skills, projects, links — is in **`lib/data.ts`**. Open it, edit the text between the quotes, save, and the site updates instantly while `npm run dev` is running.
+All content lives in **`lib/content.json`**. There are two ways to edit it:
 
-| To change… | Edit in `lib/data.ts` |
+### Option A — the Content Studio (visual, recommended)
+
+A private, form-based editor for every section (profile, about, skills, AI workflow, projects, credentials, education) with add / remove / reorder.
+
+```bash
+npm run dev
+# then open http://localhost:3000/studio
+```
+
+Edit visually → click **Save → content.json** (Chrome/Edge write the file directly; other browsers use **Download**) → commit the updated `lib/content.json` → deploy.
+
+> **Is this safe on a public site?** Yes. The site is a **static export with no server**, so the Studio only ever runs locally during `npm run dev`. On the live site the `/studio` URL shows a harmless "local editing tool" notice — there is no editor, no login, and no way to change the site — and it's marked `noindex`. It holds no passwords or private data (it only edits the same content that's already public).
+
+### Option B — edit the JSON by hand
+
+Open `lib/content.json` and change the text between the quotes. The site updates instantly while `npm run dev` is running.
+
+| To change… | Edit in `lib/content.json` |
 |---|---|
-| Name / tagline / email / socials | `profile` object |
-| Bio paragraphs, interests, stats | `about` object |
-| Skill categories & percentages | `skillCategories` array |
-| Projects (title, description, tech, links) | `projects` array |
+| Name / tagline / email / phone / socials | `profile` |
+| Bio paragraphs, interests, stats | `about` |
+| Skill categories & percentages | `skillCategories` |
+| AI tool cards | `aiWorkflow.tools` |
+| Projects (title, description, tech, links) | `projects` |
+| Certifications / education | `certifications`, `education` |
+| Contact headline & blurb | `contact` |
 
-**Add a new project** — copy an existing block in the `projects` array and change the fields. Set `liveUrl` / `repoUrl` to show "Live demo" / "Source" buttons in the modal. `accent` can be `"violet"`, `"cyan"`, or `"lime"`.
+**Add a new project** — copy an existing block in the `projects` array and change the fields. Set `liveUrl` / `repoUrl` to add source/demo links. `accent` can be `"blue"`, `"azure"`, or `"red"`.
 
-**Replace the resume** — drop your PDF in `public/` named `resume.pdf` (or change `resumeUrl` in `data.ts`).
+**Show a phone number** — set `profile.phone` (leave it empty to hide the Phone row).
+
+**Replace the resume** — drop your PDF in `public/` named `resume.pdf` (or change `resumeUrl`).
 
 ---
 
 ## 🎨 Design system
 
-- **Style:** Motion-Driven glassmorphism on near-black (`#05060A`)
-- **Brand gradient:** violet `#7C3AED` → cyan `#06B6D4` → lime `#A3E635`
-- **Type:** Space Grotesk (display) + Inter (body)
+- **Style:** Motion-driven glassmorphism on near-black (`#05060A`)
+- **Brand ("nebula") gradient:** blue `#3B82F6` → violet `#7C3AED` → pink `#EC4899`
+- **Accents:** `blue`, `azure`, `red` (see `tailwind.config.ts`)
+- **Type:** Space Grotesk (display) + Inter (body) + Space Mono (mono)
 - **Motion:** entrance reveals, magnetic buttons, tilt cards, shared-layout modal, animated aurora blobs. All motion respects `prefers-reduced-motion`.
 
 Tokens live in `tailwind.config.ts` and the utility classes (`.glass`, `.glass-strong`, `.text-gradient`, `.gradient-border`) in `app/globals.css`.
@@ -109,7 +136,7 @@ export default {
     { name: "description", type: "text" },
     { name: "longDescription", type: "text" },
     { name: "tech", type: "array", of: [{ type: "string" }] },
-    { name: "accent", type: "string", options: { list: ["violet", "cyan", "lime"] } },
+    { name: "accent", type: "string", options: { list: ["blue", "azure", "red"] } },
     { name: "liveUrl", type: "url" },
     { name: "repoUrl", type: "url" },
     { name: "cover", type: "image" },
@@ -122,7 +149,7 @@ export default {
   name: "skillCategory", type: "document", title: "Skill Category",
   fields: [
     { name: "title", type: "string" },
-    { name: "accent", type: "string", options: { list: ["violet", "cyan", "lime"] } },
+    { name: "accent", type: "string", options: { list: ["blue", "azure", "red"] } },
     { name: "skills", type: "array", of: [{
         type: "object",
         fields: [{ name: "name", type: "string" }, { name: "level", type: "number" }],

@@ -34,7 +34,7 @@ export default function Certifications() {
       className="relative z-[5] mx-auto max-w-[1200px] px-[clamp(20px,5vw,72px)] py-[clamp(60px,10vh,120px)]"
     >
       <Reveal className="mb-7 font-mono text-xs tracking-[0.2em] text-blue-glow">
-        ( 04 — CREDENTIALS )
+        ( 05 — CREDENTIALS )
       </Reveal>
 
       <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))]">

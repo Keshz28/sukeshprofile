@@ -53,14 +53,14 @@ export default function Projects() {
       <Reveal className="mb-[clamp(20px,4vh,44px)] flex flex-wrap items-end justify-between gap-3.5">
         <div>
           <div className="mb-4 font-mono text-xs tracking-[0.2em] text-blue-glow">
-            ( 03 — SELECTED WORK )
+            ( 04 — SELECTED WORK )
           </div>
           <h2 className="m-0 font-display text-[clamp(2rem,6vw,4.6rem)] font-bold leading-[0.92] tracking-[-0.02em]">
             Projects
           </h2>
         </div>
         <span className="font-mono text-xs tracking-[0.12em] text-white/50">
-          [ 04 — 2026 ]
+          [ {String(projects.length).padStart(2, "0")} — 2026 ]
         </span>
       </Reveal>
 
