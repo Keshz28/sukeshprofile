@@ -9,6 +9,7 @@ import Hero from "@/components/Hero";
 import Marquee from "@/components/Marquee";
 import About from "@/components/About";
 import Skills from "@/components/Skills";
+import AiWorkflow from "@/components/AiWorkflow";
 import Projects from "@/components/Projects";
 import Certifications from "@/components/Certifications";
 import Contact from "@/components/Contact";
@@ -30,6 +31,7 @@ export default function Home() {
         <Marquee />
         <About />
         <Skills />
+        <AiWorkflow />
         <Projects />
         <Certifications />
         <Contact />

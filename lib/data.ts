@@ -1,96 +1,72 @@
 /**
  * SITE CONTENT — single source of truth.
- * Edit this file to update text, skills, projects, and certifications
- * across the whole site.
- * (Later, this can be swapped for a Sanity.io CMS fetch — see README.)
+ *
+ * The actual content now lives in `lib/content.json`. This file gives that
+ * JSON strong TypeScript types and re-exports it, so every component keeps
+ * importing from "@/lib/data" exactly as before.
+ *
+ * ✏️  TWO WAYS TO EDIT CONTENT:
+ *   1. Visually — run `npm run dev` and open http://localhost:3000/studio
+ *      (a private, local-only editor). Add/edit projects, skills, etc., then
+ *      save the file it produces back to `lib/content.json` and commit.
+ *   2. By hand — edit `lib/content.json` directly.
+ *
+ * The `/studio` editor is a LOCAL tool only: it never runs on your live site
+ * (your site is a static export with no server), so there is nothing for
+ * visitors to log into or tamper with.
  */
 
-export const profile = {
-  name: "Sukesh Surase",
-  shortName: "Sukesh",
-  initials: "SS",
-  roles: [
-    "Full-Stack Developer",
-    "UI/UX Designer",
-    "XR Developer",
-    "Creative Media Producer",
-  ],
-  tagline:
-    "I design and build bold digital experiences end-to-end — from pixel-perfect UIs and full-stack systems to immersive VR environments.",
-  summary:
-    "Full-stack developer and creative technologist who builds across the entire stack — web apps, business systems, and XR experiences. I blend design thinking, solid engineering, and creative storytelling to ship products people love to use.",
-  location: "Available worldwide · Remote",
-  email: "surasesukesh@gmail.com",
-  resumeUrl: "/resume.pdf",
+import content from "./content.json";
+
+export type Accent = "blue" | "azure" | "red";
+
+export type Profile = {
+  name: string;
+  shortName: string;
+  initials: string;
+  roles: string[];
+  tagline: string;
+  summary: string;
+  location: string;
+  email: string;
+  /** Optional — shown as a contact row only when set. */
+  phone?: string;
+  resumeUrl: string;
   socials: {
-    linkedin: "https://www.linkedin.com/in/sukesh-surase",
-    github: "https://github.com/Keshz28",
-  },
+    linkedin: string;
+    github: string;
+  };
 };
 
-export const about = {
-  heading: "About Me",
-  paragraphs: [
-    "I'm Sukesh Surase — a full-stack developer and designer who builds across the entire stack. From crafting pixel-perfect UIs and smooth animations to architecting APIs, databases, and CRM systems, I'm comfortable wherever the work takes me.",
-    "My work spans full-stack web development, business systems, XR / VR experiences, UI/UX design, creative media production, copywriting, and public speaking & event hosting. That mix lets me move fluidly between the technical and the creative — shaping both how a product works and how it makes people feel.",
-    "I'm driven by craft and curiosity. Whether it's an immersive VR campus tour on Meta Quest 3, a full-featured CRM platform, or a polished travel-guide web app, I aim to ship experiences that are bold, accessible, and genuinely useful.",
-  ],
-  interests: [
-    "Full-Stack Development",
-    "UI/UX Design",
-    "Web Design",
-    "Public Speaking & Event Hosting",
-    "Creative Media Production",
-    "Copywriting",
-  ],
-  stats: [
-    { value: "4+", label: "Ongoing projects" },
-    { value: "6", label: "Creative disciplines" },
-    { value: "100%", label: "Passion for craft" },
-  ],
+export type About = {
+  heading: string;
+  paragraphs: string[];
+  interests: string[];
+  stats: { value: string; label: string }[];
 };
 
 export type SkillCategory = {
   title: string;
-  accent: "blue" | "azure" | "red";
+  accent: Accent;
   skills: { name: string; level: number }[];
 };
 
-export const skillCategories: SkillCategory[] = [
-  {
-    title: "Full-Stack Engineering",
-    accent: "blue",
-    skills: [
-      { name: "HTML5 & CSS3", level: 95 },
-      { name: "JavaScript (ES6+)", level: 88 },
-      { name: "React / Next.js", level: 85 },
-      { name: "Tailwind CSS", level: 90 },
-      { name: "SQL & Databases", level: 82 },
-    ],
-  },
-  {
-    title: "Design & UX",
-    accent: "azure",
-    skills: [
-      { name: "UI/UX Design", level: 90 },
-      { name: "Web Design", level: 92 },
-      { name: "Figma", level: 88 },
-      { name: "Responsive Design", level: 93 },
-      { name: "Prototyping", level: 85 },
-    ],
-  },
-  {
-    title: "Creative & Communication",
-    accent: "red",
-    skills: [
-      { name: "Creative Media Production", level: 87 },
-      { name: "Copywriting", level: 84 },
-      { name: "Public Speaking & Hosting", level: 90 },
-      { name: "Brand Storytelling", level: 83 },
-      { name: "Video Editing", level: 80 },
-    ],
-  },
-];
+/** A single AI tool card in the "AI Workflow" section. */
+export type AiTool = {
+  name: string;
+  /** Vendor / lab, shown in muted mono next to the name. */
+  org: string;
+  /** Short role, rendered as a `// comment`. */
+  role: string;
+  accent: Accent;
+  points: string[];
+};
+
+export type AiWorkflow = {
+  heading: string;
+  intro: string;
+  tools: AiTool[];
+};
 
 export type Certification = {
   title: string;
@@ -100,16 +76,6 @@ export type Certification = {
   skills: string[];
 };
 
-export const certifications: Certification[] = [
-  {
-    title: "Oracle Database SQL Certified Associate",
-    issuer: "Oracle",
-    year: "2024",
-    // credentialUrl: "https://catalog-education.oracle.com/...",
-    skills: ["SQL", "Oracle Database", "Relational Databases", "Data Querying"],
-  },
-];
-
 export type Education = {
   degree: string;
   institution: string;
@@ -118,36 +84,8 @@ export type Education = {
   year?: string;
   status: "Completed" | "In Progress";
   highlights: string[];
-  accent: "blue" | "azure" | "red";
+  accent: Accent;
 };
-
-export const education: Education[] = [
-  {
-    degree: "Bachelor of Information Technology (Hons.)",
-    institution: "HELP University",
-    kind: "Degree",
-    year: "2026",
-    status: "In Progress",
-    highlights: ["Information Technology", "Software Development", "UI/UX Design"],
-    accent: "blue",
-  },
-  {
-    degree: "Sijil Tinggi Persekolahan Malaysia (STPM)",
-    institution: "SMK Sungai Choh",
-    kind: "Pre-University",
-    status: "Completed",
-    highlights: ["Malaysian A-Level Equivalent", "Form 6"],
-    accent: "azure",
-  },
-  {
-    degree: "Sijil Pelajaran Malaysia (SPM)",
-    institution: "SMK Bukit Sentosa",
-    kind: "Secondary",
-    status: "Completed",
-    highlights: ["Malaysian O-Level Equivalent", "National Examination"],
-    accent: "azure",
-  },
-];
 
 export type Project = {
   title: string;
@@ -155,64 +93,45 @@ export type Project = {
   description: string;
   longDescription: string;
   tech: string[];
-  accent: "blue" | "azure" | "red";
+  accent: Accent;
   liveUrl?: string;
   repoUrl?: string;
   year: string;
 };
 
-export const projects: Project[] = [
-  {
-    title: "VR Campus Tour",
-    category: "Immersive · XR",
-    year: "2026",
-    description:
-      "An interactive virtual reality campus tour that lets prospective students explore facilities in immersive 3D.",
-    longDescription:
-      "A fully immersive XR campus tour built in Unity, scripted in C#, and deployed on Meta Quest 3. Real-world spaces were captured using Polycam for 3D scanning and Insta360 for 360° photography, then assembled into an interactive walkthrough with spatial navigation and hotspots.",
-    tech: ["Unity", "C#", "Meta Quest 3", "Polycam", "Insta360"],
-    accent: "blue",
-  },
-  {
-    title: "KL The Guide Web",
-    category: "Web Platform · Travel",
-    year: "2026",
-    description:
-      "A polished travel-guide web platform helping visitors discover the best of Kuala Lumpur.",
-    longDescription:
-      "A content-rich travel guide with curated destinations, dynamic filtering, and a responsive editorial layout. Built with JavaScript on the front-end, SQL powering the database layer, and Figma driving the visual design — focused on fast load times, intuitive navigation, and a vibrant identity that captures the energy of the city.",
-    tech: ["JavaScript", "SQL", "Figma", "Responsive Design"],
-    accent: "azure",
-  },
-  {
-    title: "SJSS Web",
-    category: "Business · Full-Stack",
-    year: "2026",
-    description:
-      "A modern business website and system built end-to-end for clarity, speed, and a strong brand presence.",
-    longDescription:
-      "A full-stack build for the SJSS platform covering a polished marketing website and internal system UI. Emphasises a clean component architecture, accessible forms, and a cohesive design system — built to scale with reusable UI patterns and a smooth, professional user experience.",
-    tech: ["Next.js", "React", "Tailwind CSS", "UI/UX Design"],
-    accent: "red",
-  },
-  {
-    title: "SJRenovation CRM",
-    category: "Business · CRM",
-    year: "2026",
-    description:
-      "A full-featured CRM system for a renovation company — managing customers, quotations, and project pipelines.",
-    longDescription:
-      "An end-to-end CRM platform built for SJ Renovation, featuring customer management, quotation generation, project tracking, and file uploads. Designed with a clean dashboard UI and a RESTful API backend for streamlined day-to-day business operations. Currently in active development.",
-    tech: ["Next.js", "React", "Tailwind CSS", "TypeScript"],
-    accent: "blue",
-  },
-];
+export type Contact = {
+  heading: string;
+  headingAccent: string;
+  blurb: string;
+};
+
+export type SiteContent = {
+  profile: Profile;
+  about: About;
+  skillCategories: SkillCategory[];
+  aiWorkflow: AiWorkflow;
+  projects: Project[];
+  certifications: Certification[];
+  education: Education[];
+  contact: Contact;
+};
+
+const site = content as unknown as SiteContent;
+
+export const profile = site.profile;
+export const about = site.about;
+export const skillCategories = site.skillCategories;
+export const aiWorkflow = site.aiWorkflow;
+export const projects = site.projects;
+export const certifications = site.certifications;
+export const education = site.education;
+export const contact = site.contact;
 
 export const navLinks = [
   { label: "Home", href: "#home" },
   { label: "About", href: "#about" },
   { label: "Skills", href: "#skills" },
-  { label: "Certs", href: "#certifications" },
+  { label: "AI", href: "#ai-workflow" },
   { label: "Projects", href: "#projects" },
   { label: "Contact", href: "#contact" },
 ];

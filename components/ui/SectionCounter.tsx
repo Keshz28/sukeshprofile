@@ -10,6 +10,7 @@ const SECTIONS = [
   { id: "home", label: "HOME" },
   { id: "about", label: "ABOUT" },
   { id: "skills", label: "SKILLS" },
+  { id: "ai-workflow", label: "AI WORKFLOW" },
   { id: "projects", label: "WORK" },
   { id: "certs", label: "CREDENTIALS" },
   { id: "contact", label: "CONTACT" },
@@ -74,7 +75,7 @@ export default function SectionCounter() {
         {SECTIONS[idx].label}
       </span>
       <span className="font-mono text-[10px] tracking-[0.22em] opacity-50">
-        / 05
+        / {String(SECTIONS.length - 1).padStart(2, "0")}
       </span>
     </div>
   );

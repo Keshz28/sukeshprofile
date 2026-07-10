@@ -1,0 +1,11 @@
+# deps / build for the studio sub-app
+/node_modules
+/.next
+/out
+
+# env
+.env
+.env*.local
+
+*.tsbuildinfo
+next-env.d.ts
