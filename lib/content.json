@@ -36,9 +36,18 @@
       "Copywriting"
     ],
     "stats": [
-      { "value": "4+", "label": "Ongoing projects" },
-      { "value": "6", "label": "Creative disciplines" },
-      { "value": "100%", "label": "Passion for craft" }
+      {
+        "value": "4+",
+        "label": "Ongoing projects"
+      },
+      {
+        "value": "6",
+        "label": "Creative disciplines"
+      },
+      {
+        "value": "100%",
+        "label": "Passion for craft"
+      }
     ]
   },
   "skillCategories": [
@@ -46,33 +55,78 @@
       "title": "Full-Stack Engineering",
       "accent": "blue",
       "skills": [
-        { "name": "HTML5 & CSS3", "level": 95 },
-        { "name": "JavaScript (ES6+)", "level": 88 },
-        { "name": "React / Next.js", "level": 85 },
-        { "name": "Tailwind CSS", "level": 90 },
-        { "name": "SQL & Databases", "level": 82 }
+        {
+          "name": "HTML5 & CSS3",
+          "level": 95
+        },
+        {
+          "name": "JavaScript (ES6+)",
+          "level": 88
+        },
+        {
+          "name": "React / Next.js",
+          "level": 85
+        },
+        {
+          "name": "Tailwind CSS",
+          "level": 90
+        },
+        {
+          "name": "SQL & Databases",
+          "level": 82
+        }
       ]
     },
     {
       "title": "Design & UX",
       "accent": "azure",
       "skills": [
-        { "name": "UI/UX Design", "level": 90 },
-        { "name": "Web Design", "level": 92 },
-        { "name": "Figma", "level": 88 },
-        { "name": "Responsive Design", "level": 93 },
-        { "name": "Prototyping", "level": 85 }
+        {
+          "name": "UI/UX Design",
+          "level": 90
+        },
+        {
+          "name": "Web Design",
+          "level": 92
+        },
+        {
+          "name": "Figma",
+          "level": 88
+        },
+        {
+          "name": "Responsive Design",
+          "level": 93
+        },
+        {
+          "name": "Prototyping",
+          "level": 85
+        }
       ]
     },
     {
       "title": "Creative & Communication",
       "accent": "red",
       "skills": [
-        { "name": "Creative Media Production", "level": 87 },
-        { "name": "Copywriting", "level": 84 },
-        { "name": "Public Speaking & Hosting", "level": 90 },
-        { "name": "Brand Storytelling", "level": 83 },
-        { "name": "Video Editing", "level": 80 }
+        {
+          "name": "Creative Media Production",
+          "level": 87
+        },
+        {
+          "name": "Copywriting",
+          "level": 84
+        },
+        {
+          "name": "Public Speaking & Hosting",
+          "level": 90
+        },
+        {
+          "name": "Brand Storytelling",
+          "level": 83
+        },
+        {
+          "name": "Video Editing",
+          "level": 80
+        }
       ]
     }
   ],
@@ -113,7 +167,13 @@
       "year": "2026",
       "description": "An interactive virtual reality campus tour that lets prospective students explore facilities in immersive 3D.",
       "longDescription": "A fully immersive XR campus tour built in Unity, scripted in C#, and deployed on Meta Quest 3. Real-world spaces were captured using Polycam for 3D scanning and Insta360 for 360° photography, then assembled into an interactive walkthrough with spatial navigation and hotspots.",
-      "tech": ["Unity", "C#", "Meta Quest 3", "Polycam", "Insta360"],
+      "tech": [
+        "Unity",
+        "C#",
+        "Meta Quest 3",
+        "Polycam",
+        "Insta360"
+      ],
       "accent": "blue"
     },
     {
@@ -122,7 +182,12 @@
       "year": "2026",
       "description": "A polished travel-guide web platform helping visitors discover the best of Kuala Lumpur.",
       "longDescription": "A content-rich travel guide with curated destinations, dynamic filtering, and a responsive editorial layout. Built with JavaScript on the front-end, SQL powering the database layer, and Figma driving the visual design — focused on fast load times, intuitive navigation, and a vibrant identity that captures the energy of the city.",
-      "tech": ["JavaScript", "SQL", "Figma", "Responsive Design"],
+      "tech": [
+        "JavaScript",
+        "SQL",
+        "Figma",
+        "Responsive Design"
+      ],
       "accent": "azure"
     },
     {
@@ -131,7 +196,12 @@
       "year": "2026",
       "description": "A modern business website and system built end-to-end for clarity, speed, and a strong brand presence.",
       "longDescription": "A full-stack build for the SJSS platform covering a polished marketing website and internal system UI. Emphasises a clean component architecture, accessible forms, and a cohesive design system — built to scale with reusable UI patterns and a smooth, professional user experience.",
-      "tech": ["Next.js", "React", "Tailwind CSS", "UI/UX Design"],
+      "tech": [
+        "Next.js",
+        "React",
+        "Tailwind CSS",
+        "UI/UX Design"
+      ],
       "accent": "red"
     },
     {
@@ -140,8 +210,25 @@
       "year": "2026",
       "description": "A full-featured CRM system for a renovation company — managing customers, quotations, and project pipelines.",
       "longDescription": "An end-to-end CRM platform built for SJ Renovation, featuring customer management, quotation generation, project tracking, and file uploads. Designed with a clean dashboard UI and a RESTful API backend for streamlined day-to-day business operations. Currently in active development.",
-      "tech": ["Next.js", "React", "Tailwind CSS", "TypeScript"],
+      "tech": [
+        "Next.js",
+        "React",
+        "Tailwind CSS",
+        "TypeScript"
+      ],
       "accent": "blue"
+    },
+    {
+      "title": "Morgana AI",
+      "category": "Personal AI",
+      "year": "2026",
+      "description": "A voice-first, JARVIS-style AI assistant that talks with me, remembers me across sessions, acts through its own tools, reaches out proactively, and even finds IT jobs and drafts/sends applications on my approval.",
+      "longDescription": "MorganaAI is a voice-first personal AI assistant built in Python, architected as five concentric layers around one shared \"brain\": a streaming conversation core, a pluggable tool registry, speech in/out, long-term memory, and an always-on proactive loop.\n\nBeyond answering, she acts: managing tasks and reminders, searching my notes, reporting system status, remembering durable facts, and running a background \"heartbeat\" that surfaces things proactively (due reminders, low battery, and newly posted jobs), quietly by default, only interrupting when it matters. She monitors open job boards for IT/freelance roles worldwide and can draft and send email applications with my résumé attached every consequential action (sending mail, deleting data) passes through a hard confirmation gate, with a full audit log and a one-command kill switch.\n\nThis is my Morgana",
+      "tech": [
+        "Python   ·   Claude Agent SDK   ·   Anthropic Claude   ·   MCP (Model Context Protocol)   ·   Deepgram   ·   ElevenLabs   ·   Vosk   ·   React   ·   Server-Sent Events   ·   asyncio   ·   SMTP / IMAP   ·   REST APIs"
+      ],
+      "accent": "azure",
+      "repoUrl": "https://github.com/Keshz28/MorganaAI"
     }
   ],
   "certifications": [
@@ -149,7 +236,12 @@
       "title": "Oracle Database SQL Certified Associate",
       "issuer": "Oracle",
       "year": "2024",
-      "skills": ["SQL", "Oracle Database", "Relational Databases", "Data Querying"]
+      "skills": [
+        "SQL",
+        "Oracle Database",
+        "Relational Databases",
+        "Data Querying"
+      ]
     }
   ],
   "education": [
@@ -159,7 +251,11 @@
       "kind": "Degree",
       "year": "2026",
       "status": "In Progress",
-      "highlights": ["Information Technology", "Software Development", "UI/UX Design"],
+      "highlights": [
+        "Information Technology",
+        "Software Development",
+        "UI/UX Design"
+      ],
       "accent": "blue"
     },
     {
@@ -167,7 +263,10 @@
       "institution": "SMK Sungai Choh",
       "kind": "Pre-University",
       "status": "Completed",
-      "highlights": ["Malaysian A-Level Equivalent", "Form 6"],
+      "highlights": [
+        "Malaysian A-Level Equivalent",
+        "Form 6"
+      ],
       "accent": "azure"
     },
     {
@@ -175,7 +274,10 @@
       "institution": "SMK Bukit Sentosa",
       "kind": "Secondary",
       "status": "Completed",
-      "highlights": ["Malaysian O-Level Equivalent", "National Examination"],
+      "highlights": [
+        "Malaysian O-Level Equivalent",
+        "National Examination"
+      ],
       "accent": "azure"
     }
   ],
