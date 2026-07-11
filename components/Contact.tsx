@@ -2,6 +2,7 @@
 
 import { profile, contact } from "@/lib/data";
 import Reveal from "./ui/Reveal";
+import Magnetic from "./ui/Magnetic";
 import { useClock } from "./ui/useClock";
 
 // Strip protocol / trailing slash for a cleaner display value.
@@ -13,7 +14,7 @@ export default function Contact() {
   const clock = useClock();
   const year = new Date().getFullYear();
 
-  // Prominent, clickable contact rows — the fix for "no one can find my links".
+  // Prominent, clickable contact rows — every link a big obvious tap target.
   const rows: Row[] = [
     { label: "Email", value: profile.email, href: `mailto:${profile.email}` },
     {
@@ -42,33 +43,57 @@ export default function Contact() {
   return (
     <section
       id="contact"
-      className="relative z-[5] mx-auto max-w-[1200px] px-[clamp(20px,5vw,72px)] pt-[clamp(70px,14vh,160px)]"
+      className="relative z-[5] mx-auto max-w-[1400px] px-[clamp(20px,4.5vw,64px)] pt-[clamp(70px,14vh,160px)]"
     >
       <Reveal>
-        <div className="mb-[clamp(20px,4vh,38px)] font-mono text-xs tracking-[0.2em] text-white/50">
+        <div className="mb-[clamp(20px,4vh,38px)] font-mono text-xs tracking-[0.2em] text-blue-glow">
           ( 06 — LET&apos;S CONNECT )
         </div>
 
-        <a
-          href={`mailto:${profile.email}`}
-          data-cursor="hover"
-          className="block no-underline"
-        >
-          <h2 className="m-0 break-words font-display text-[clamp(2rem,10vw,9.5rem)] font-bold uppercase leading-[0.9] tracking-[-0.03em] text-white">
-            {contact.heading}
-            <br />
-            <span className="bg-brand-gradient bg-clip-text text-transparent">
-              {contact.headingAccent}
-            </span>
-          </h2>
-        </a>
+        <div className="flex flex-wrap items-center gap-[clamp(24px,5vw,72px)]">
+          <a
+            href={`mailto:${profile.email}`}
+            data-cursor="hover"
+            className="block min-w-0 no-underline"
+          >
+            <h2 className="m-0 break-words font-display text-[clamp(2rem,9.5vw,9rem)] font-bold uppercase leading-[0.9] tracking-[-0.03em] text-white">
+              {contact.heading}
+              <br />
+              <span className="bg-brand-gradient bg-clip-text text-transparent">
+                {contact.headingAccent}
+              </span>
+            </h2>
+          </a>
+
+          {/* magnetic launch button */}
+          <Magnetic strength={0.45}>
+            <a
+              href={`mailto:${profile.email}`}
+              data-cursor="hover"
+              aria-label={`Email ${profile.name}`}
+              className="group relative grid h-[clamp(110px,14vw,170px)] w-[clamp(110px,14vw,170px)] shrink-0 place-items-center rounded-full border border-white/15 bg-white/[0.04] backdrop-blur-md transition-colors duration-300 hover:border-white/35"
+            >
+              <span
+                aria-hidden
+                className="absolute inset-[-1px] rounded-full bg-brand-gradient opacity-0 transition-opacity duration-300 group-hover:opacity-20"
+              />
+              <span className="text-center font-mono text-[clamp(10px,1.1vw,12px)] uppercase tracking-[0.22em] text-white/80">
+                Say
+                <br />
+                hello
+                <span className="mt-1 block font-display text-xl transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1">
+                  ↗
+                </span>
+              </span>
+            </a>
+          </Magnetic>
+        </div>
 
         <p className="mt-[clamp(22px,4vh,40px)] max-w-[52ch] text-pretty text-[clamp(1rem,1.5vw,1.15rem)] leading-[1.7] text-white/[0.62]">
           {contact.blurb}
         </p>
       </Reveal>
 
-      {/* Prominent contacts block — every link is a big, obvious tap target. */}
       <Reveal
         delay={0.1}
         className="mt-[clamp(30px,6vh,60px)] border-t border-white/10"
