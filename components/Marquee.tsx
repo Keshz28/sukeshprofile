@@ -22,7 +22,7 @@ function Track() {
 
 export default function Marquee() {
   return (
-    <div className="relative z-[5] overflow-hidden whitespace-nowrap border-y border-white/10 bg-[rgba(2,5,16,0.35)] py-5">
+    <div className="relative z-[5] overflow-hidden whitespace-nowrap border-y border-white/10 bg-[var(--band)] py-5">
       <div className="inline-block animate-marquee font-display text-[clamp(1.6rem,4vw,3.2rem)] font-semibold text-white/[0.92]">
         {/* duplicated track → seamless -50% loop */}
         <Track />

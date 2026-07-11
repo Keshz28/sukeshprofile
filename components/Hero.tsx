@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { profile } from "@/lib/data";
 import { useClock } from "./ui/useClock";
 import Magnetic from "./ui/Magnetic";
+import OrbitRings from "./ui/OrbitRings";
 
 function RoleRotator() {
   const [i, setI] = useState(0);
@@ -39,6 +40,8 @@ export default function Hero() {
       id="home"
       className="relative z-[5] flex min-h-screen flex-col justify-center px-[clamp(20px,5vw,72px)] pb-[70px] pt-[130px] text-center"
     >
+      <OrbitRings />
+
       <div className="mx-auto w-full max-w-[1100px]">
         {/* availability badge */}
         <div
@@ -59,7 +62,7 @@ export default function Hero() {
         >
           <span
             className="block"
-            style={{ textShadow: "0 0 80px rgba(37,99,235,0.30), 0 0 160px rgba(99,102,241,0.15)" }}
+            style={{ textShadow: "var(--halo)" }}
           >
             <span className="block overflow-hidden">
               <span

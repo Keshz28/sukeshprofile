@@ -93,13 +93,28 @@ Open `lib/content.json` and change the text between the quotes. The site updates
 
 ---
 
-## 🎨 Design system
+## 🎨 Design system — DEEP SPACE ↔ NEAR THE SUN
 
-- **Style:** Motion-driven glassmorphism on near-black (`#05060A`)
-- **Brand ("nebula") gradient:** blue `#3B82F6` → violet `#7C3AED` → pink `#EC4899`
-- **Accents:** `blue`, `azure`, `red` (see `tailwind.config.ts`)
+The site has two complete worlds, switched by the sun/star toggle in the navbar
+(persisted in `localStorage`, applied before paint, cross-faded with the View
+Transitions API):
+
+| | 🌌 Deep Space (default) | ☀️ Near the Sun (light) |
+|---|---|---|
+| Backdrop | looping nebula video + warp starfield + meteors | molten sun: pulsing core, breathing corona, wheeling god-rays, golden dust motes |
+| Base | near-black `#05060A`, white text | warm ivory `#FFF6E8`, deep bronze text |
+| Brand gradient | "Nebula": blue → violet → pink | "Corona": gold → orange → crimson |
+| Accents | blue / indigo / red-pink | amber / burnt orange / crimson |
+
+**How it works:** every color is a CSS variable in `app/globals.css`; Tailwind's
+`white` is remapped to `var(--fg)` in `tailwind.config.ts`, so all existing
+`text-white/60`-style classes re-theme automatically. Scene components live in
+`components/ui/` (`SceneManager`, `SunScene`, `Starfield`, `AnimatedBackground`);
+the toggle + hook in `components/theme/`. Sun mode clamps faint text alphas up
+to keep everything ≥ 4.5:1 WCAG AA on ivory.
+
 - **Type:** Space Grotesk (display) + Inter (body) + Space Mono (mono)
-- **Motion:** entrance reveals, magnetic buttons, tilt cards, shared-layout modal, animated aurora blobs. All motion respects `prefers-reduced-motion`.
+- **Motion:** entrance reveals, magnetic buttons, tilt cards, orbital rings in the hero, cursor spotlight + custom dot, scroll-warp starfield, shooting stars (space), heat shimmer + lens flares (sun). All motion respects `prefers-reduced-motion`.
 
 Tokens live in `tailwind.config.ts` and the utility classes (`.glass`, `.glass-strong`, `.text-gradient`, `.gradient-border`) in `app/globals.css`.
 

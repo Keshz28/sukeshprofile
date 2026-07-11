@@ -1,15 +1,19 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import type { Theme } from "../theme/useTheme";
 
-// Continuous parallax starfield (ported from the Portfolio.dc design).
-// A field of depth-sorted stars drifts upward and twinkles; scroll velocity
-// stretches them into motion streaks for a warp-speed feel. Sits above the
-// space video but behind the page content, blended with "screen" so the stars
-// read as light over the nebula footage.
+// Continuous parallax particle field, themed two ways:
+//  · "space" — depth-sorted stars drift upward and twinkle; scroll velocity
+//    stretches them into warp streaks, and every few seconds a meteor tears a
+//    diagonal across the sky. Blended "screen" so stars read as light.
+//  · "sun"   — motes of golden dust hang in the light, sinking slowly with a
+//    lazy sideways sway; a few white-hot sparkles glint through. Normal blend
+//    (dark-warm specks over the bright sky) so they read as backlit dust.
 
-// "Nebula" accent palette — rgb triplets.
-const COLORS = ["150,190,255", "205,170,255", "255,255,255", "236,140,210"];
+const SPACE_COLORS = ["150,190,255", "205,170,255", "255,255,255", "236,140,210"];
+const SUN_COLORS = ["180,83,9", "194,65,12", "217,119,6", "146,64,14"];
+const SUN_SPARKLE = "255,255,255";
 
 type Star = {
   x: number;
@@ -20,9 +24,12 @@ type Star = {
   tw: number;
   ph: number;
   col: string;
+  sparkle?: boolean;
 };
 
-export default function Starfield() {
+type Meteor = { x: number; y: number; vx: number; vy: number; life: number };
+
+export default function Starfield({ theme = "space" }: { theme?: Theme }) {
   const ref = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -31,6 +38,7 @@ export default function Starfield() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    const sun = theme === "sun";
     const reduce =
       !!window.matchMedia &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -39,6 +47,8 @@ export default function Starfield() {
     let h = window.innerHeight;
     let dpr = Math.min(window.devicePixelRatio || 1, 2);
     let stars: Star[] = [];
+    let meteors: Meteor[] = [];
+    let nextMeteor = Date.now() + 2500 + Math.random() * 4000;
     let scrollVel = 0;
     let lastY = window.scrollY;
     let raf = 0;
@@ -55,15 +65,21 @@ export default function Starfield() {
       stars = [];
       for (let i = 0; i < count; i++) {
         const z = 0.2 + Math.random() * 0.8;
+        const sparkle = sun && Math.random() < 0.12;
         stars.push({
           x: Math.random() * w,
           y: Math.random() * h,
           z,
-          r: 0.4 + z * 1.3,
-          base: 0.35 + Math.random() * 0.6,
+          r: sun ? 0.5 + z * 1.6 : 0.4 + z * 1.3,
+          base: sun ? 0.12 + Math.random() * 0.2 : 0.35 + Math.random() * 0.6,
           tw: 0.5 + Math.random() * 1.6,
           ph: Math.random() * 6.28,
-          col: COLORS[(Math.random() * COLORS.length) | 0],
+          col: sparkle
+            ? SUN_SPARKLE
+            : (sun ? SUN_COLORS : SPACE_COLORS)[
+                (Math.random() * 4) | 0
+              ],
+          sparkle,
         });
       }
     };
@@ -79,15 +95,22 @@ export default function Starfield() {
       const now = Date.now() * 0.001;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       const vel = scrollVel;
+
       for (const s of stars) {
-        const dy = s.z * 0.22 + vel * s.z * 0.14;
+        // space: stars rise (warp up). sun: dust sinks with a lazy sway.
+        const drift = sun ? -(s.z * 0.1) : s.z * 0.22;
+        const dy = drift + vel * s.z * 0.14;
         s.y -= dy;
+        if (sun) s.x += Math.sin(now * 0.4 + s.ph) * 0.08 * s.z;
         if (s.y < 0) s.y += h;
         if (s.y > h) s.y -= h;
-        const a = Math.max(
-          0,
-          Math.min(1, s.base * (0.6 + 0.4 * Math.sin(now * s.tw + s.ph)))
-        );
+        if (s.x < 0) s.x += w;
+        if (s.x > w) s.x -= w;
+
+        const twinkle = s.sparkle
+          ? Math.max(0, Math.sin(now * s.tw * 2 + s.ph)) ** 3 // rare hard glints
+          : 0.6 + 0.4 * Math.sin(now * s.tw + s.ph);
+        const a = Math.max(0, Math.min(1, s.base * twinkle));
         const sx = s.x * dpr;
         const sy = s.y * dpr;
         const streak = reduce ? 0 : Math.min(Math.abs(vel) * s.z * 0.9, 90);
@@ -106,6 +129,45 @@ export default function Starfield() {
           ctx.fill();
         }
       }
+
+      // ── meteors (space only) ──────────────────────────────────────────
+      if (!sun && !reduce) {
+        if (Date.now() > nextMeteor && meteors.length < 2) {
+          const fromLeft = Math.random() < 0.5;
+          meteors.push({
+            x: fromLeft ? -40 : Math.random() * w * 0.7,
+            y: fromLeft ? Math.random() * h * 0.4 : -40,
+            vx: 7 + Math.random() * 5,
+            vy: 4 + Math.random() * 3,
+            life: 1,
+          });
+          nextMeteor = Date.now() + 3500 + Math.random() * 6000;
+        }
+        meteors = meteors.filter((m) => m.life > 0);
+        for (const m of meteors) {
+          m.x += m.vx;
+          m.y += m.vy;
+          if (m.x > w * 0.75) m.life -= 0.045; // burn out past mid-sky
+          const tail = 90;
+          const g = ctx.createLinearGradient(
+            (m.x - m.vx * tail * 0.12) * dpr,
+            (m.y - m.vy * tail * 0.12) * dpr,
+            m.x * dpr,
+            m.y * dpr
+          );
+          g.addColorStop(0, "rgba(150,190,255,0)");
+          g.addColorStop(1, `rgba(255,255,255,${0.85 * m.life})`);
+          ctx.strokeStyle = g;
+          ctx.lineWidth = 1.4 * dpr;
+          ctx.lineCap = "round";
+          ctx.beginPath();
+          ctx.moveTo((m.x - m.vx * tail * 0.12) * dpr, (m.y - m.vy * tail * 0.12) * dpr);
+          ctx.lineTo(m.x * dpr, m.y * dpr);
+          ctx.stroke();
+          if (m.x > w + 60 || m.y > h + 60) m.life = 0;
+        }
+      }
+
       // friction so streaks settle when scrolling stops
       scrollVel = vel * 0.9;
       if (Math.abs(scrollVel) < 0.05) scrollVel = 0;
@@ -120,14 +182,14 @@ export default function Starfield() {
       window.removeEventListener("resize", build);
       window.removeEventListener("scroll", onScroll);
     };
-  }, []);
+  }, [theme]);
 
   return (
     <canvas
       ref={ref}
       aria-hidden
       className="pointer-events-none fixed inset-0 -z-[5]"
-      style={{ mixBlendMode: "screen" }}
+      style={{ mixBlendMode: theme === "sun" ? "normal" : "screen" }}
     />
   );
 }

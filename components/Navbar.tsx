@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { profile } from "@/lib/data";
+import ThemeToggle from "./theme/ThemeToggle";
 
 const LINKS = [
   { label: "About", href: "#about" },
@@ -79,6 +80,11 @@ export default function Navbar() {
             </a>
           ))}
         </div>
+
+        <span className="hidden h-[18px] w-px shrink-0 bg-white/15 sm:inline-block" />
+
+        {/* space ↔ sun */}
+        <ThemeToggle />
       </nav>
     </motion.header>
   );

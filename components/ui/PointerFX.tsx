@@ -70,7 +70,7 @@ export default function PointerFX() {
         className="pointer-events-none fixed inset-0 -z-[4]"
         style={{
           background:
-            "radial-gradient(460px circle at var(--x, 50vw) var(--y, 25vh), rgba(96,165,250,0.10), transparent 70%)",
+            "radial-gradient(460px circle at var(--x, 50vw) var(--y, 25vh), rgb(var(--spot) / 0.10), transparent 70%)",
         }}
       />
       <div

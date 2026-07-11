@@ -114,7 +114,7 @@ export default function Projects() {
               onMouseEnter={() => enter(p)}
               onMouseLeave={leave}
               aria-label={`View details for ${p.title}`}
-              className="group grid w-full grid-cols-[40px_1fr_auto_22px] items-center gap-3 border-b border-white/10 px-2 py-[clamp(18px,3vh,32px)] text-left text-[#e7e9f0] transition-[padding,background] duration-[0.45s] ease-out hover:bg-white/[0.04] hover:px-[22px] sm:grid-cols-[60px_1fr_auto_26px] sm:gap-[18px]"
+              className="group grid w-full grid-cols-[40px_1fr_auto_22px] items-center gap-3 border-b border-white/10 px-2 py-[clamp(18px,3vh,32px)] text-left text-white/[0.91] transition-[padding,background] duration-[0.45s] ease-out hover:bg-white/[0.04] hover:px-[22px] sm:grid-cols-[60px_1fr_auto_26px] sm:gap-[18px]"
             >
               <span className="bg-brand-gradient bg-clip-text font-mono text-[13px] text-transparent">
                 {String(i + 1).padStart(2, "0")}
@@ -150,7 +150,7 @@ export default function Projects() {
         className="pointer-events-none fixed left-0 top-0 z-[60] w-[320px] will-change-transform"
         style={{ opacity: visible ? 1 : 0, transition: "opacity .4s ease" }}
       >
-        <div className="overflow-hidden rounded-2xl border border-white/[0.12] bg-[rgba(14,16,25,0.85)] shadow-[0_30px_80px_rgba(0,0,0,0.55)] backdrop-blur-[14px]">
+        <div className="overflow-hidden rounded-2xl border border-white/[0.12] bg-[var(--panel)] shadow-[var(--shadow-lg)] backdrop-blur-[14px]">
           <div className="h-[5px] bg-brand-gradient" />
           <div className="p-[18px]">
             <div className="font-mono text-[11px] uppercase tracking-[0.14em] text-blue-glow">
@@ -221,7 +221,7 @@ function ProjectModal({
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 40, scale: 0.98 }}
         transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
-        className="relative w-full max-w-[640px] max-h-[88vh] overflow-hidden rounded-t-[24px] border border-white/12 bg-[rgba(12,14,22,0.94)] shadow-[0_40px_120px_rgba(0,0,0,0.6)] outline-none backdrop-blur-2xl sm:rounded-[24px]"
+        className="relative w-full max-w-[640px] max-h-[88vh] overflow-hidden rounded-t-[24px] border border-white/12 bg-[var(--panel-strong)] shadow-[var(--shadow-lg)] outline-none backdrop-blur-2xl sm:rounded-[24px]"
       >
         <div className={`h-[4px] bg-gradient-to-r ${bar}`} />
 
@@ -230,7 +230,7 @@ function ProjectModal({
           onClick={onClose}
           data-cursor="hover"
           aria-label="Close"
-          className="absolute right-4 top-5 z-10 grid h-9 w-9 place-items-center rounded-full border border-white/12 bg-black/30 text-lg text-white/60 transition hover:border-white/30 hover:text-white"
+          className="absolute right-4 top-5 z-10 grid h-9 w-9 place-items-center rounded-full border border-white/12 bg-white/[0.06] text-lg text-white/60 backdrop-blur-sm transition hover:border-white/30 hover:text-white"
         >
           ×
         </button>

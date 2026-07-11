@@ -2,10 +2,68 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   DUAL THEME — "DEEP SPACE" (default) ↔ "NEAR THE SUN" (data-theme="sun")
+   All tokens are RGB triplets so Tailwind can apply alpha: rgb(var(--x) / a).
+   ═══════════════════════════════════════════════════════════════════════════ */
+
 :root {
+  /* ── deep space ── */
   --bg: #05060a;
-  /* "Nebula" brand gradient — single source for inline gradient fills */
+  --fg: 255 255 255; /* Tailwind `white` resolves here */
+
+  /* nebula accents: blue / indigo / red-pink */
+  --acc1: 37 99 235;
+  --acc1-glow: 96 165 250;
+  --acc2: 99 102 241;
+  --acc2-glow: 129 140 248;
+  --acc3: 239 68 68;
+  --acc3-glow: 248 113 113;
+
+  /* "Nebula" brand gradient — single source for gradient fills */
   --brand: linear-gradient(120deg, #3b82f6 0%, #7c3aed 50%, #ec4899 100%);
+
+  /* surfaces & fx */
+  --panel: rgba(14, 16, 25, 0.85);        /* floating preview card */
+  --panel-strong: rgba(12, 14, 22, 0.94); /* modal panel */
+  --band: rgba(2, 5, 16, 0.35);           /* marquee band */
+  --spot: 96 165 250;                     /* cursor spotlight tint */
+  --halo: 0 0 80px rgba(37, 99, 235, 0.3), 0 0 160px rgba(99, 102, 241, 0.15);
+  --shadow-lg: 0 30px 80px rgba(0, 0, 0, 0.55);
+  --sel: rgba(37, 99, 235, 0.45);
+  --scroll-track: #05060a;
+  --scroll-a: #2563eb;
+  --scroll-b: #ef4444;
+  --grain-opacity: 0.045;
+}
+
+:root[data-theme="sun"] {
+  /* ── near the sun ── */
+  --bg: #fff6e8;
+  --fg: 47 24 8; /* deep bronze — every `white/xx` becomes warm ink */
+
+  /* solar accents: amber / orange / crimson (dark enough to read on ivory) */
+  --acc1: 194 106 6;
+  --acc1-glow: 154 82 5;
+  --acc2: 216 78 10;
+  --acc2-glow: 176 62 10;
+  --acc3: 205 34 34;
+  --acc3-glow: 164 26 26;
+
+  /* "Corona" brand gradient — molten gold → orange → crimson */
+  --brand: linear-gradient(120deg, #e8930c 0%, #ea580c 48%, #dc2626 100%);
+
+  --panel: rgba(255, 250, 240, 0.88);
+  --panel-strong: rgba(255, 251, 243, 0.96);
+  --band: rgba(255, 237, 209, 0.5);
+  --spot: 234 140 20;
+  --halo: 0 0 80px rgba(234, 88, 12, 0.28), 0 0 160px rgba(232, 147, 12, 0.18);
+  --shadow-lg: 0 30px 80px rgba(146, 64, 14, 0.22);
+  --sel: rgba(234, 88, 12, 0.3);
+  --scroll-track: #fff6e8;
+  --scroll-a: #e8930c;
+  --scroll-b: #dc2626;
+  --grain-opacity: 0.03;
 }
 
 * {
@@ -30,16 +88,30 @@ html {
   }
 }
 
+/* Explicit per-theme rules (not var()-indirected): the background/text swap is
+   the single most important part of the theme flip, so it must never depend on
+   custom-property re-resolution timing. The View Transition handles the fade. */
 body {
-  background-color: var(--bg);
-  color: #e7e9f0;
+  background-color: #05060a;
+  color: rgb(255 255 255 / 0.92);
   overflow-x: hidden;
+}
+:root[data-theme="sun"] body {
+  background-color: #fff6e8;
+  color: rgb(47 24 8 / 0.92);
+}
+
+/* Theme swap via the View Transitions API — a slow, cinematic cross-dissolve */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.65s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Custom selection */
 ::selection {
-  background: rgba(37, 99, 235, 0.45);
-  color: #fff;
+  background: var(--sel);
+  color: rgb(var(--fg));
 }
 
 /* Hide the native cursor on fine-pointer devices — the custom dot replaces it.
@@ -54,12 +126,12 @@ body.cursor-none * {
   width: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #05060a;
+  background: var(--scroll-track);
 }
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(#2563eb, #ef4444);
+  background: linear-gradient(var(--scroll-a), var(--scroll-b));
   border-radius: 999px;
-  border: 2px solid #05060a;
+  border: 2px solid var(--scroll-track);
 }
 
 @layer components {
@@ -67,13 +139,23 @@ body.cursor-none * {
   .glass {
     @apply border border-white/10 bg-white/[0.04] backdrop-blur-xl;
     box-shadow: 0 8px 40px -12px rgba(0, 0, 0, 0.6),
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+      inset 0 1px 0 0 rgb(var(--fg) / 0.06);
   }
 
   .glass-strong {
     @apply border border-white/15 bg-white/[0.07] backdrop-blur-2xl;
     box-shadow: 0 12px 48px -12px rgba(0, 0, 0, 0.7),
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+      inset 0 1px 0 0 rgb(var(--fg) / 0.08);
+  }
+
+  /* Softer, warmer glass shadows in daylight */
+  :root[data-theme="sun"] .glass {
+    box-shadow: 0 8px 32px -14px rgba(146, 64, 14, 0.35),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.65);
+  }
+  :root[data-theme="sun"] .glass-strong {
+    box-shadow: 0 12px 40px -14px rgba(146, 64, 14, 0.4),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.75);
   }
 
   /* Gradient text */
@@ -100,9 +182,9 @@ body.cursor-none * {
     padding: 1px;
     background: linear-gradient(
       130deg,
-      rgba(37, 99, 235, 0.6),
-      rgba(99, 102, 241, 0.4),
-      rgba(239, 68, 68, 0.5)
+      rgb(var(--acc1) / 0.6),
+      rgb(var(--acc2) / 0.4),
+      rgb(var(--acc3) / 0.5)
     );
     -webkit-mask: linear-gradient(#000 0 0) content-box,
       linear-gradient(#000 0 0);
@@ -111,6 +193,20 @@ body.cursor-none * {
     pointer-events: none;
   }
 }
+
+/* ── Sun-mode contrast floor ─────────────────────────────────────────────────
+   Low-alpha bronze over bright ivory dips below WCAG AA (needs ≥ ~0.62 alpha
+   for 4.5:1 on #FFF6E8), so daylight clamps the faint text utilities up.
+   Unlayered rules intentionally outrank Tailwind's layered utilities. */
+:root[data-theme="sun"] .text-white\/30,
+:root[data-theme="sun"] .text-white\/35 { color: rgb(var(--fg) / 0.62); }
+:root[data-theme="sun"] .text-white\/40,
+:root[data-theme="sun"] .text-white\/45 { color: rgb(var(--fg) / 0.64); }
+:root[data-theme="sun"] .text-white\/50,
+:root[data-theme="sun"] .text-white\/55 { color: rgb(var(--fg) / 0.67); }
+:root[data-theme="sun"] .text-white\/60,
+:root[data-theme="sun"] .text-white\/\[0\.6\],
+:root[data-theme="sun"] .text-white\/\[0\.62\] { color: rgb(var(--fg) / 0.7); }
 
 @keyframes pulse-slow {
   0%, 100% { opacity: 0.6; transform: scale(1); }
@@ -125,6 +221,24 @@ body.cursor-none * {
 @keyframes ping-dot { 75%, 100% { transform: scale(2.2); opacity: 0; } }
 @keyframes gradShift{ 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
 @keyframes numRoll  { from { transform: translateY(105%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+/* ── Solar scene choreography ("near the sun") ──────────────────────────── */
+@keyframes sunPulse {
+  0%, 100% { transform: scale(1);    opacity: 0.9; }
+  50%      { transform: scale(1.06); opacity: 1; }
+}
+@keyframes raysSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes heatShimmer {
+  0%, 100% { transform: translateY(0) scaleY(1);      opacity: 0.5; }
+  50%      { transform: translateY(-12px) scaleY(1.04); opacity: 0.8; }
+}
+@keyframes orbit {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
 
 @layer utilities {
   .text-balance {
@@ -141,8 +255,8 @@ body.cursor-none * {
     display: none;
   }
   .grid-bg {
-    background-image: linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-image: linear-gradient(rgb(var(--fg) / 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(var(--fg) / 0.04) 1px, transparent 1px);
     background-size: 56px 56px;
   }
 }

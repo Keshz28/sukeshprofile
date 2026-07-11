@@ -56,6 +56,9 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+// Runs before paint so a saved "sun" theme never flashes deep-space first.
+const themeInit = `try{if(localStorage.getItem("kesh-theme")==="sun")document.documentElement.dataset.theme="sun"}catch(e){}`;
+
 export default function RootLayout({
   children,
 }: {
@@ -64,8 +67,12 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${spaceGrotesk.variable} ${spaceMono.variable} ${inter.variable}`}
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInit }} />
+      </head>
       <body className="font-body antialiased">{children}</body>
     </html>
   );

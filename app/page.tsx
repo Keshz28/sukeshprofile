@@ -1,5 +1,4 @@
-import AnimatedBackground from "@/components/ui/AnimatedBackground";
-import Starfield from "@/components/ui/Starfield";
+import SceneManager from "@/components/ui/SceneManager";
 import PointerFX from "@/components/ui/PointerFX";
 import Grain from "@/components/ui/Grain";
 import SectionCounter from "@/components/ui/SectionCounter";
@@ -17,9 +16,8 @@ import Contact from "@/components/Contact";
 export default function Home() {
   return (
     <>
-      {/* fixed background + overlay stack */}
-      <AnimatedBackground />
-      <Starfield />
+      {/* fixed background + overlay stack (theme-aware: space ↔ sun) */}
+      <SceneManager />
       <PointerFX />
       <Grain />
       <ScrollProgress />

@@ -1,5 +1,14 @@
 import type { Config } from "tailwindcss";
 
+// ─── Dual-theme token system ────────────────────────────────────────────────
+// Every color below resolves to a CSS variable defined in app/globals.css:
+//   :root                → "space"  (deep-space dark — default)
+//   [data-theme="sun"]   → "sun"    (near-the-sun light)
+// `white` is remapped to var(--fg): in space it IS white, near the sun it
+// becomes deep bronze — so every text-white/60, border-white/10 and
+// bg-white/[0.04] in the codebase re-themes automatically.
+const v = (name: string) => `rgb(var(${name}) / <alpha-value>)`;
+
 const config: Config = {
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
@@ -8,15 +17,11 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ink: {
-          DEFAULT: "#05060A",
-          soft: "#0A0C14",
-          card: "#0E1019",
-        },
-        // Blue + Red brand system (with an indigo bridge for depth)
-        blue: { brand: "#2563EB", glow: "#60A5FA" },
-        azure: { brand: "#6366F1", glow: "#818CF8" },
-        red: { brand: "#EF4444", glow: "#F87171" },
+        white: v("--fg"),
+        ink: { DEFAULT: "#05060A", soft: "#0A0C14", card: "#0E1019" },
+        blue: { brand: v("--acc1"), glow: v("--acc1-glow") },
+        azure: { brand: v("--acc2"), glow: v("--acc2-glow") },
+        red: { brand: v("--acc3"), glow: v("--acc3-glow") },
       },
       fontFamily: {
         display: ["var(--font-space-grotesk)", "system-ui", "sans-serif"],
@@ -24,11 +29,9 @@ const config: Config = {
         mono: ["var(--font-space-mono)", "ui-monospace", "monospace"],
       },
       backgroundImage: {
-        // "Nebula" accent from the Portfolio.dc design — blue → violet → pink
-        "brand-gradient":
-          "linear-gradient(120deg, #3B82F6 0%, #7C3AED 50%, #EC4899 100%)",
+        "brand-gradient": "var(--brand)",
         "radial-glow":
-          "radial-gradient(circle at center, rgba(37,99,235,0.25), transparent 60%)",
+          "radial-gradient(circle at center, rgb(var(--acc1) / 0.25), transparent 60%)",
       },
       keyframes: {
         float: {
@@ -46,12 +49,18 @@ const config: Config = {
         shimmer: {
           "100%": { transform: "translateX(100%)" },
         },
+        "spin-slow": {
+          from: { transform: "rotate(0deg)" },
+          to: { transform: "rotate(360deg)" },
+        },
       },
       animation: {
         float: "float 6s ease-in-out infinite",
         "gradient-pan": "gradient-pan 8s ease infinite",
         marquee: "marquee 28s linear infinite",
         shimmer: "shimmer 2s infinite",
+        "spin-slow": "spin-slow 60s linear infinite",
+        "spin-slower": "spin-slow 120s linear infinite",
       },
     },
   },
