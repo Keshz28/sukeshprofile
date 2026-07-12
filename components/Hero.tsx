@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { profile } from "@/lib/data";
 import Magnetic from "./ui/Magnetic";
-import OrbitRings from "./ui/OrbitRings";
 
 function RoleRotator() {
   const [i, setI] = useState(0);
@@ -64,6 +63,89 @@ function SpinBadge() {
   );
 }
 
+/**
+ * Animated solar system filling the hero's right half: planets on concentric
+ * orbits circle the spinning "open to opportunities" badge, with twinkling
+ * star specks between rings. Pure CSS animation on theme accent tokens.
+ */
+function HeroOrbital() {
+  return (
+    <div className="relative mx-auto aspect-square w-[clamp(340px,34vw,560px)]">
+      {/* orbit rings + planets: [ring size %, orbit seconds, reverse?] */}
+      {ORBITS.map((o) => (
+        <div
+          key={o.size}
+          className={`absolute rounded-full border ${o.dashed ? "border-dashed" : ""} border-white/[0.12]`}
+          style={{
+            inset: `${(100 - o.size) / 2}%`,
+            animation: `orbit ${o.dur}s linear infinite${o.reverse ? " reverse" : ""}`,
+          }}
+        >
+          <span
+            className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 rounded-full"
+            style={{
+              width: o.planet,
+              height: o.planet,
+              background: `rgb(var(${o.acc}-glow))`,
+              boxShadow: `0 0 ${o.planet * 1.6}px ${o.planet / 3}px rgb(var(${o.acc}) / 0.5)`,
+            }}
+          >
+            {/* one planet gets a Saturn ring */}
+            {o.ringed && (
+              <span
+                aria-hidden
+                className="absolute left-1/2 top-1/2 h-[6px] w-[26px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/50"
+                style={{ transform: "translate(-50%,-50%) rotate(-24deg)" }}
+              />
+            )}
+          </span>
+        </div>
+      ))}
+
+      {/* twinkling specks between the orbits */}
+      {SPECKS.map((s, i) => (
+        <span
+          key={i}
+          aria-hidden
+          className="absolute rounded-full bg-white/80"
+          style={{
+            left: s.x,
+            top: s.y,
+            width: s.r,
+            height: s.r,
+            animation: `pulse-slow ${s.dur}s ease-in-out ${s.delay}s infinite`,
+          }}
+        />
+      ))}
+
+      {/* the badge is the star everything orbits */}
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+        <span
+          aria-hidden
+          className="absolute left-1/2 top-1/2 h-[190px] w-[190px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[rgb(var(--acc1)/0.16)] blur-2xl"
+          style={{ animation: "sunPulse 7s ease-in-out infinite" }}
+        />
+        <SpinBadge />
+      </div>
+    </div>
+  );
+}
+
+const ORBITS = [
+  { size: 100, dur: 52, reverse: false, dashed: true, planet: 10, acc: "--acc2", ringed: false },
+  { size: 74, dur: 36, reverse: true, dashed: false, planet: 14, acc: "--acc3", ringed: true },
+  { size: 48, dur: 24, reverse: false, dashed: false, planet: 8, acc: "--acc1", ringed: false },
+];
+
+const SPECKS = [
+  { x: "16%", y: "22%", r: 3, dur: 6, delay: 0 },
+  { x: "78%", y: "14%", r: 2, dur: 7, delay: 1.2 },
+  { x: "88%", y: "58%", r: 3, dur: 5, delay: 0.6 },
+  { x: "30%", y: "82%", r: 2, dur: 8, delay: 2 },
+  { x: "8%", y: "56%", r: 2, dur: 6.5, delay: 3 },
+  { x: "62%", y: "88%", r: 2.5, dur: 7.5, delay: 1.8 },
+];
+
 export default function Hero() {
   const { scrollY } = useScroll();
   const heroY = useTransform(scrollY, [0, 600], [0, 70]);
@@ -73,9 +155,7 @@ export default function Hero() {
       id="home"
       className="relative z-[5] flex min-h-screen flex-col justify-center px-[clamp(20px,4.5vw,64px)] pb-[90px] pt-[110px]"
     >
-      <OrbitRings />
-
-      <div className="mx-auto grid w-full max-w-[1400px] grid-cols-1 items-center gap-10 lg:grid-cols-[1fr_auto]">
+      <div className="mx-auto grid w-full max-w-[1400px] grid-cols-1 items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
         {/* ── left: editorial stack ── */}
         <div>
           {/* availability */}
@@ -90,10 +170,10 @@ export default function Hero() {
             Open to opportunities · Available worldwide
           </div>
 
-          {/* name — solid line, gradient line, hollow echo */}
+          {/* name — one clean stack: solid first name, gradient surname */}
           <motion.h1
             style={{ y: heroY }}
-            className="m-0 font-display text-[clamp(3rem,10.5vw,9.5rem)] font-bold uppercase leading-[0.88] tracking-[-0.03em] will-change-transform"
+            className="m-0 font-display text-[clamp(3rem,9.5vw,8.5rem)] font-bold uppercase leading-[0.9] tracking-[-0.03em] will-change-transform"
           >
             <span className="block overflow-hidden">
               <span
@@ -111,14 +191,6 @@ export default function Hero() {
                   animation:
                     "riseIn 1s .3s both, gradShift 7s 1.3s ease-in-out infinite",
                 }}
-              >
-                Surase
-              </span>
-            </span>
-            <span className="block overflow-hidden" aria-hidden>
-              <span
-                className="text-stroke inline-block select-none"
-                style={{ animation: "riseIn 1s .45s both", opacity: 0.5 }}
               >
                 Surase
               </span>
@@ -179,21 +251,23 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* ── right: spinning badge rail (desktop) ── */}
+        {/* ── right: living solar system ── */}
         <div
-          className="hidden flex-col items-center gap-8 self-stretch justify-self-end lg:flex lg:justify-center"
-          style={{ animation: "fadeUp 1.2s .9s both" }}
+          className="hidden lg:block"
+          style={{ animation: "fadeUp 1.2s .8s both" }}
         >
-          <SpinBadge />
-          <div className="h-24 w-px bg-gradient-to-b from-transparent via-white/25 to-transparent" />
-          <span
-            className="font-mono text-[10px] tracking-[0.3em] text-white/40"
-            style={{ writingMode: "vertical-rl" }}
-          >
-            EARTH · SOL SYSTEM
-          </span>
+          <HeroOrbital />
         </div>
       </div>
+
+      {/* vertical meta label pinned to the section's right edge */}
+      <span
+        aria-hidden
+        className="absolute right-[clamp(14px,2vw,28px)] top-1/2 hidden -translate-y-1/2 font-mono text-[10px] tracking-[0.3em] text-white/35 lg:block"
+        style={{ writingMode: "vertical-rl", animation: "fadeUp 1.2s 1.1s both" }}
+      >
+        EARTH · SOL SYSTEM · {new Date().getFullYear()}
+      </span>
 
       {/* scroll hint */}
       <a
