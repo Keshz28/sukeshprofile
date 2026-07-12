@@ -31,6 +31,12 @@ export type Profile = {
   email: string;
   /** Optional — shown as a contact row only when set. */
   phone?: string;
+  /**
+   * Optional — WhatsApp number in international format WITHOUT "+" or
+   * leading zeros (e.g. Malaysian 010-285 3920 → "60102853920").
+   * When set, the "Say hello" launcher opens a WhatsApp chat.
+   */
+  whatsapp?: string;
   resumeUrl: string;
   socials: {
     linkedin: string;

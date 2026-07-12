@@ -14,6 +14,15 @@ export default function Contact() {
   const clock = useClock();
   const year = new Date().getFullYear();
 
+  // "Say hello" opens WhatsApp with a ready-to-send opener when a number is
+  // configured in content.json; otherwise it falls back to email.
+  const whatsappMsg = encodeURIComponent(
+    `Hi Sukesh! 👋 I just explored your portfolio and I'd love to connect.`
+  );
+  const helloHref = profile.whatsapp
+    ? `https://wa.me/${profile.whatsapp}?text=${whatsappMsg}`
+    : `mailto:${profile.email}`;
+
   // Prominent, clickable contact rows — every link a big obvious tap target.
   const rows: Row[] = [
     { label: "Email", value: profile.email, href: `mailto:${profile.email}` },
@@ -65,12 +74,18 @@ export default function Contact() {
             </h2>
           </a>
 
-          {/* magnetic launch button */}
+          {/* magnetic launch button — WhatsApp chat with a prefilled opener */}
           <Magnetic strength={0.45}>
             <a
-              href={`mailto:${profile.email}`}
+              href={helloHref}
+              target={profile.whatsapp ? "_blank" : undefined}
+              rel={profile.whatsapp ? "noopener noreferrer" : undefined}
               data-cursor="hover"
-              aria-label={`Email ${profile.name}`}
+              aria-label={
+                profile.whatsapp
+                  ? `Chat with ${profile.name} on WhatsApp`
+                  : `Email ${profile.name}`
+              }
               className="group relative grid h-[clamp(110px,14vw,170px)] w-[clamp(110px,14vw,170px)] shrink-0 place-items-center rounded-full border border-white/15 bg-white/[0.04] backdrop-blur-md transition-colors duration-300 hover:border-white/35"
             >
               <span
