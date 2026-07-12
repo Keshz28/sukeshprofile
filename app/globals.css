@@ -99,6 +99,11 @@ body {
 :root[data-theme="sun"] body {
   background-color: #fff6e8;
   color: rgb(47 24 8 / 0.92);
+  /* Soft light halo behind text: invisible over light areas, but keeps bronze
+     text crisp over the darker patches of the solar video now that the ivory
+     wash is much lighter. text-shadow inherits, so this covers all text. */
+  text-shadow: 0 1px 12px rgba(255, 247, 232, 0.55),
+    0 0 2px rgba(255, 247, 232, 0.4);
 }
 
 /* Theme swap via the View Transitions API — a slow, cinematic cross-dissolve */
@@ -192,6 +197,30 @@ body.cursor-none * {
     mask-composite: exclude;
     pointer-events: none;
   }
+}
+
+/* ── Sun-mode frosted surfaces ───────────────────────────────────────────────
+   In space mode `white` = white, so bg-white/[0.04] is a faint LIGHT frost.
+   In sun mode `white` = bronze, so the same class becomes a faint DARK tint —
+   wrong for a light theme. Repaint the card/pill surfaces as warm frosted
+   glass (backdrop-blur already present) so they read as light panels floating
+   over the solar video. */
+:root[data-theme="sun"] .bg-white\/\[0\.03\],
+:root[data-theme="sun"] .bg-white\/\[0\.035\],
+:root[data-theme="sun"] .bg-white\/\[0\.04\],
+:root[data-theme="sun"] .bg-white\/\[0\.05\],
+:root[data-theme="sun"] .bg-white\/5,
+:root[data-theme="sun"] .bg-white\/\[0\.06\] {
+  background-color: rgba(255, 250, 242, 0.62) !important;
+}
+:root[data-theme="sun"] .bg-white\/\[0\.07\] {
+  background-color: rgba(255, 251, 244, 0.74) !important;
+}
+/* darken faint dividers/borders so panel edges stay visible on ivory */
+:root[data-theme="sun"] .border-white\/10,
+:root[data-theme="sun"] .border-white\/12,
+:root[data-theme="sun"] .border-white\/15 {
+  border-color: rgba(120, 53, 15, 0.16) !important;
 }
 
 /* ── Sun-mode contrast floor ─────────────────────────────────────────────────

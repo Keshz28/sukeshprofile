@@ -12,12 +12,13 @@ export default function SunScene() {
       src="/sun.mp4"
       fallback="radial-gradient(130% 110% at 82% -8%, #FFE9BE 0%, #FFEFD2 32%, #FFF6E8 62%, #FDF1DE 100%)"
     >
-      {/* ivory wash — keeps the footage luminous but the page readable */}
+      {/* light warm wash — lets the solar footage shine through while a soft
+         text-glow (see globals.css) keeps bronze text legible over it */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(180deg, rgba(255,246,232,0.62), rgba(255,246,232,0.78))",
+            "linear-gradient(180deg, rgba(255,239,214,0.30) 0%, rgba(252,231,197,0.44) 100%)",
         }}
       />
 
