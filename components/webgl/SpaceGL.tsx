@@ -161,11 +161,82 @@ function BlackHole() {
   );
 }
 
+/* ───────────────────────── asteroid field (3D3) ─────────────────────────── */
+// Instanced debris tumbling through the foreground, lit by the accretion disk
+// so rocks catch a warm rim as they drift past the hole.
+function Asteroids({ count = 70 }: { count?: number }) {
+  const ref = useRef<THREE.InstancedMesh>(null);
+  const dummy = useMemo(() => new THREE.Object3D(), []);
+  const rocks = useMemo(
+    () =>
+      Array.from({ length: count }, () => ({
+        pos: new THREE.Vector3(
+          (Math.random() - 0.5) * 40,
+          (Math.random() - 0.5) * 24,
+          -Math.random() * 26 - 3
+        ),
+        rot: new THREE.Euler(
+          Math.random() * 6.28,
+          Math.random() * 6.28,
+          Math.random() * 6.28
+        ),
+        spin: (Math.random() - 0.5) * 0.4,
+        scale: 0.05 + Math.random() * 0.22,
+        drift: 0.1 + Math.random() * 0.3,
+      })),
+    [count]
+  );
+
+  useFrame((_, dt) => {
+    const mesh = ref.current;
+    if (!mesh) return;
+    for (let i = 0; i < count; i++) {
+      const r = rocks[i];
+      r.rot.x += r.spin * dt;
+      r.rot.y += r.spin * 0.6 * dt;
+      r.pos.x += r.drift * dt;
+      if (r.pos.x > 21) r.pos.x = -21;
+      dummy.position.copy(r.pos);
+      dummy.rotation.copy(r.rot);
+      dummy.scale.setScalar(r.scale);
+      dummy.updateMatrix();
+      mesh.setMatrixAt(i, dummy.matrix);
+    }
+    mesh.instanceMatrix.needsUpdate = true;
+  });
+
+  return (
+    <instancedMesh
+      ref={ref}
+      args={[undefined, undefined, count]}
+      frustumCulled={false}
+    >
+      <dodecahedronGeometry args={[1, 0]} />
+      <meshStandardMaterial color="#7a7686" roughness={1} metalness={0} flatShading />
+    </instancedMesh>
+  );
+}
+
 /* ───────────────────────── supernova bursts (W4) ────────────────────────── */
 function Supernova() {
   const ref = useRef<THREE.Mesh>(null);
   const state = useRef({ next: 8, life: 0, dur: 2.6 });
   const clock = useRef(0);
+  const boost = useRef(false);
+
+  // `kesh:supernova` detonates one immediately, up close and much brighter
+  // (used by the konami easter egg).
+  useEffect(() => {
+    const onNova = () => {
+      const m = ref.current;
+      if (!m) return;
+      m.position.set((Math.random() - 0.5) * 8, (Math.random() - 0.5) * 5, -6);
+      state.current.life = state.current.dur;
+      boost.current = true;
+    };
+    window.addEventListener("kesh:supernova", onNova);
+    return () => window.removeEventListener("kesh:supernova", onNova);
+  }, []);
 
   const mat = useMemo(
     () =>
@@ -200,11 +271,12 @@ function Supernova() {
       s.life -= dt;
       const p = 1 - s.life / s.dur; // 0→1
       // gentle, far-off flare: eases in and out instead of popping
-      const scale = 0.15 + p * p * 3.2;
-      m.scale.setScalar(scale);
-      mat.opacity = Math.sin(p * Math.PI) ** 2 * 0.32;
+      const b = boost.current ? 3.4 : 1;
+      m.scale.setScalar((0.15 + p * p * 3.2) * b);
+      mat.opacity = Math.sin(p * Math.PI) ** 2 * (boost.current ? 0.9 : 0.32);
       if (s.life <= 0) {
         mat.opacity = 0;
+        boost.current = false;
         s.next = clock.current + 16 + Math.random() * 16;
       }
     }
@@ -353,7 +425,11 @@ export default function SpaceGL() {
         }}
       >
         <color attach="background" args={["#05060a"]} />
+        {/* the disk is the only real light source out here */}
+        <ambientLight intensity={0.18} />
+        <pointLight position={BH} intensity={90} distance={70} decay={2} color="#ffb27a" />
         <Nebula />
+        <Asteroids />
         <Stars radius={90} depth={60} count={5000} factor={4} saturation={0} fade speed={0.5} />
         <BlackHole />
         <Supernova />

@@ -6,6 +6,7 @@ import { profile } from "@/lib/data";
 import ThemeToggle from "./theme/ThemeToggle";
 import { useClock } from "./ui/useClock";
 import MenuOverlay from "./ui/MenuOverlay";
+import SoundFX from "./ui/SoundFX";
 
 const LINKS = [
   { n: "01", label: "About", href: "#about" },
@@ -111,6 +112,7 @@ export default function Navbar() {
           <span className="hidden font-mono text-[11px] tracking-[0.1em] text-white/50 tabular-nums lg:inline">
             {clock}
           </span>
+          <SoundFX />
           <ThemeToggle />
 
           <button

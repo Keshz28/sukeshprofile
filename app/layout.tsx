@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import { Bricolage_Grotesque, Space_Grotesk, Space_Mono, Inter } from "next/font/google";
 import { profile } from "@/lib/data";
 import "./globals.css";
@@ -79,10 +80,13 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${bricolage.variable} ${spaceGrotesk.variable} ${spaceMono.variable} ${inter.variable}`}
     >
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeInit }} />
-      </head>
-      <body className="font-body antialiased">{children}</body>
+      <body className="font-body antialiased">
+        {/* runs before hydration so a saved "sun" theme never flashes */}
+        <Script id="kesh-theme-init" strategy="beforeInteractive">
+          {themeInit}
+        </Script>
+        {children}
+      </body>
     </html>
   );
 }
