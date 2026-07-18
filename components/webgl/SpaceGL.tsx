@@ -164,7 +164,7 @@ function BlackHole() {
 /* ───────────────────────── supernova bursts (W4) ────────────────────────── */
 function Supernova() {
   const ref = useRef<THREE.Mesh>(null);
-  const state = useRef({ next: 3, life: 0, dur: 1.4 });
+  const state = useRef({ next: 8, life: 0, dur: 2.6 });
   const clock = useRef(0);
 
   const mat = useMemo(
@@ -199,12 +199,13 @@ function Supernova() {
     if (s.life > 0) {
       s.life -= dt;
       const p = 1 - s.life / s.dur; // 0→1
-      const scale = 0.2 + p * p * 9;
+      // gentle, far-off flare: eases in and out instead of popping
+      const scale = 0.15 + p * p * 3.2;
       m.scale.setScalar(scale);
-      mat.opacity = Math.sin(p * Math.PI) * 0.9;
+      mat.opacity = Math.sin(p * Math.PI) ** 2 * 0.32;
       if (s.life <= 0) {
         mat.opacity = 0;
-        s.next = clock.current + 7 + Math.random() * 9;
+        s.next = clock.current + 16 + Math.random() * 16;
       }
     }
   });

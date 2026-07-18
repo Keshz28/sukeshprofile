@@ -48,7 +48,7 @@ export default function Starfield({ theme = "space" }: { theme?: Theme }) {
     let dpr = Math.min(window.devicePixelRatio || 1, 2);
     let stars: Star[] = [];
     let meteors: Meteor[] = [];
-    let nextMeteor = Date.now() + 2500 + Math.random() * 4000;
+    let nextMeteor = Date.now() + 12000 + Math.random() * 12000;
     let scrollVel = 0;
     let lastY = window.scrollY;
     let raf = 0;
@@ -57,6 +57,10 @@ export default function Starfield({ theme = "space" }: { theme?: Theme }) {
     let pty = 0;
     let px = 0;
     let py = 0;
+    // Cursor gravity well (C1) — stars inside this radius fall toward the pointer.
+    let pmx = -9999;
+    let pmy = -9999;
+    const GRAV_R = 190;
 
     const build = () => {
       w = window.innerWidth;
@@ -99,6 +103,9 @@ export default function Starfield({ theme = "space" }: { theme?: Theme }) {
       // -1..1 from viewport centre → a gentle max drift for the deepest layer.
       ptx = (e.clientX / w - 0.5) * 2;
       pty = (e.clientY / h - 0.5) * 2;
+      // raw px, used for the cursor's local gravity well
+      pmx = e.clientX;
+      pmy = e.clientY;
     };
 
     const loop = () => {
@@ -118,6 +125,19 @@ export default function Starfield({ theme = "space" }: { theme?: Theme }) {
         const dy = drift + vel * s.z * 0.14;
         s.y -= dy;
         if (sun) s.x += Math.sin(now * 0.4 + s.ph) * 0.08 * s.z;
+
+        // cursor gravity — nearer + nearer-to-camera stars are pulled harder
+        if (!reduce) {
+          const gx = pmx - s.x;
+          const gy = pmy - s.y;
+          const gd = Math.hypot(gx, gy);
+          if (gd < GRAV_R && gd > 0.5) {
+            const pull = (1 - gd / GRAV_R) ** 2 * 0.9 * s.z;
+            s.x += (gx / gd) * pull;
+            s.y += (gy / gd) * pull;
+          }
+        }
+
         if (s.y < 0) s.y += h;
         if (s.y > h) s.y -= h;
         if (s.x < 0) s.x += w;
@@ -148,7 +168,7 @@ export default function Starfield({ theme = "space" }: { theme?: Theme }) {
 
       // ── meteors (space only) ──────────────────────────────────────────
       if (!sun && !reduce) {
-        if (Date.now() > nextMeteor && meteors.length < 2) {
+        if (Date.now() > nextMeteor && meteors.length < 1) {
           const fromLeft = Math.random() < 0.5;
           meteors.push({
             x: fromLeft ? -40 : Math.random() * w * 0.7,
@@ -157,7 +177,7 @@ export default function Starfield({ theme = "space" }: { theme?: Theme }) {
             vy: 4 + Math.random() * 3,
             life: 1,
           });
-          nextMeteor = Date.now() + 3500 + Math.random() * 6000;
+          nextMeteor = Date.now() + 18000 + Math.random() * 20000;
         }
         meteors = meteors.filter((m) => m.life > 0);
         for (const m of meteors) {
@@ -172,9 +192,9 @@ export default function Starfield({ theme = "space" }: { theme?: Theme }) {
             m.y * dpr
           );
           g.addColorStop(0, "rgba(150,190,255,0)");
-          g.addColorStop(1, `rgba(255,255,255,${0.85 * m.life})`);
+          g.addColorStop(1, `rgba(210,225,255,${0.3 * m.life})`);
           ctx.strokeStyle = g;
-          ctx.lineWidth = 1.4 * dpr;
+          ctx.lineWidth = 1 * dpr;
           ctx.lineCap = "round";
           ctx.beginPath();
           ctx.moveTo((m.x - m.vx * tail * 0.12) * dpr, (m.y - m.vy * tail * 0.12) * dpr);

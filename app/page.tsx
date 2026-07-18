@@ -1,4 +1,5 @@
 import SceneManager from "@/components/ui/SceneManager";
+import BootSequence from "@/components/ui/BootSequence";
 import SmoothScroll from "@/components/ui/SmoothScroll";
 import PointerFX from "@/components/ui/PointerFX";
 import Grain from "@/components/ui/Grain";
@@ -17,6 +18,9 @@ import Contact from "@/components/Contact";
 export default function Home() {
   return (
     <>
+      {/* boot sequence — plays once per session, above everything */}
+      <BootSequence />
+
       {/* momentum smooth-scroll + GSAP ticker bridge */}
       <SmoothScroll />
 

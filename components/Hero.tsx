@@ -66,71 +66,18 @@ function SpinBadge() {
 }
 
 /**
- * Animated solar system filling the hero's right half: the eight planets on
- * concentric orbits circle the spinning "open to opportunities" badge — inner
- * orbits fast, outer slow (Kepler would approve), each starting at its own
- * phase via a negative animation-delay. Pure CSS animation.
+ * The hero's right-hand element. The CSS solar system that used to live here
+ * was retired once the WebGL black hole landed behind it — the planets were
+ * fighting the real scene. All that remains is the spinning "open to
+ * opportunities" badge, floating over the event horizon.
  */
 function HeroOrbital() {
   return (
-    <div className="relative mx-auto aspect-square w-[clamp(350px,36vw,620px)]">
-      {PLANETS.map((p) => (
-        <div
-          key={p.name}
-          className={`absolute rounded-full border ${p.dashed ? "border-dashed" : ""} border-white/[0.11]`}
-          style={{
-            inset: `${(100 - p.ring) / 2}%`,
-            animation: `orbit ${p.dur}s linear infinite`,
-            animationDelay: `-${p.phase}s`,
-          }}
-        >
-          <span
-            title={p.name}
-            className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 rounded-full"
-            style={{
-              width: p.size,
-              height: p.size,
-              background: `radial-gradient(circle at 32% 30%, ${p.hi}, ${p.color} 62%)`,
-              boxShadow: `0 0 ${p.size * 1.4}px ${p.size / 4}px ${p.color}55`,
-            }}
-          >
-            {/* Saturn keeps its ring */}
-            {p.ringed && (
-              <span
-                aria-hidden
-                className="absolute left-1/2 top-1/2 rounded-full border border-white/55"
-                style={{
-                  width: p.size * 1.9,
-                  height: p.size * 0.42,
-                  transform: "translate(-50%,-50%) rotate(-24deg)",
-                }}
-              />
-            )}
-          </span>
-        </div>
-      ))}
-
-      {/* twinkling specks between the orbits */}
-      {SPECKS.map((s, i) => (
-        <span
-          key={i}
-          aria-hidden
-          className="absolute rounded-full bg-white/80"
-          style={{
-            left: s.x,
-            top: s.y,
-            width: s.r,
-            height: s.r,
-            animation: `pulse-slow ${s.dur}s ease-in-out ${s.delay}s infinite`,
-          }}
-        />
-      ))}
-
-      {/* the badge is the star everything orbits */}
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+    <div className="relative mx-auto grid aspect-square w-[clamp(350px,36vw,620px)] place-items-center">
+      <div className="relative">
         <span
           aria-hidden
-          className="absolute left-1/2 top-1/2 h-[190px] w-[190px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[rgb(var(--acc1)/0.16)] blur-2xl"
+          className="absolute left-1/2 top-1/2 h-[190px] w-[190px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[rgb(var(--acc1)/0.14)] blur-2xl"
           style={{ animation: "sunPulse 7s ease-in-out infinite" }}
         />
         <SpinBadge />
@@ -138,28 +85,6 @@ function HeroOrbital() {
     </div>
   );
 }
-
-// The family, inside out — ring = orbit diameter (% of container),
-// dur = seconds per revolution, phase = starting-angle offset.
-const PLANETS = [
-  { name: "Mercury", ring: 48,  dur: 12, phase: 3,  size: 9,  color: "#9CA3AF", hi: "#E5E7EB", ringed: false, dashed: false },
-  { name: "Venus",   ring: 55,  dur: 18, phase: 11, size: 13, color: "#E8B15C", hi: "#FCE1B0", ringed: false, dashed: false },
-  { name: "Earth",   ring: 62,  dur: 24, phase: 7,  size: 14, color: "#4A90E2", hi: "#A8D8F0", ringed: false, dashed: false },
-  { name: "Mars",    ring: 70,  dur: 30, phase: 21, size: 11, color: "#DC5B45", hi: "#F4A88F", ringed: false, dashed: false },
-  { name: "Jupiter", ring: 77.5, dur: 42, phase: 16, size: 24, color: "#D9A066", hi: "#F2D3AC", ringed: false, dashed: false },
-  { name: "Saturn",  ring: 85,  dur: 54, phase: 34, size: 20, color: "#E3C179", hi: "#F6E4B8", ringed: true,  dashed: false },
-  { name: "Uranus",  ring: 92.5, dur: 68, phase: 50, size: 16, color: "#7DD3E0", hi: "#C6EEF5", ringed: false, dashed: false },
-  { name: "Neptune", ring: 100, dur: 84, phase: 27, size: 16, color: "#5B76F7", hi: "#AEBCFB", ringed: false, dashed: true },
-];
-
-const SPECKS = [
-  { x: "16%", y: "22%", r: 3, dur: 6, delay: 0 },
-  { x: "78%", y: "14%", r: 2, dur: 7, delay: 1.2 },
-  { x: "88%", y: "58%", r: 3, dur: 5, delay: 0.6 },
-  { x: "30%", y: "82%", r: 2, dur: 8, delay: 2 },
-  { x: "8%", y: "56%", r: 2, dur: 6.5, delay: 3 },
-  { x: "62%", y: "88%", r: 2.5, dur: 7.5, delay: 1.8 },
-];
 
 export default function Hero() {
   const { scrollY } = useScroll();
