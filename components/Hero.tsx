@@ -28,64 +28,6 @@ function RoleRotator() {
   );
 }
 
-/** Spinning circular text badge — pure SVG, wheels forever. */
-function SpinBadge() {
-  const r = 54;
-  return (
-    <a
-      href="#contact"
-      data-cursor="hover"
-      aria-label="Open to opportunities — contact me"
-      className="relative grid h-[150px] w-[150px] place-items-center"
-    >
-      <svg
-        viewBox="0 0 140 140"
-        className="absolute inset-0 h-full w-full animate-spin-slow text-white/70"
-        style={{ animationDuration: "22s" }}
-        aria-hidden
-      >
-        <defs>
-          <path
-            id="badge-circle"
-            d={`M 70,70 m -${r},0 a ${r},${r} 0 1,1 ${r * 2},0 a ${r},${r} 0 1,1 -${r * 2},0`}
-          />
-        </defs>
-        {/* text budget: 2πr ≈ 339 units — keep the label short so the loop
-            never overlaps its own start */}
-        <text className="fill-current font-mono text-[10.5px] tracking-[0.26em]">
-          <textPath href="#badge-circle">
-            OPEN TO OPPORTUNITIES ✦ REMOTE ✦
-          </textPath>
-        </text>
-      </svg>
-      <span className="grid h-[54px] w-[54px] place-items-center rounded-full border border-white/15 bg-white/[0.05] font-display text-xl text-white backdrop-blur-sm transition-transform duration-300 hover:scale-110">
-        ↗
-      </span>
-    </a>
-  );
-}
-
-/**
- * The hero's right-hand element. The CSS solar system that used to live here
- * was retired once the WebGL black hole landed behind it — the planets were
- * fighting the real scene. All that remains is the spinning "open to
- * opportunities" badge, floating over the event horizon.
- */
-function HeroOrbital() {
-  return (
-    <div className="relative mx-auto grid aspect-square w-[clamp(350px,36vw,620px)] place-items-center">
-      <div className="relative">
-        <span
-          aria-hidden
-          className="absolute left-1/2 top-1/2 h-[190px] w-[190px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[rgb(var(--acc1)/0.14)] blur-2xl"
-          style={{ animation: "sunPulse 7s ease-in-out infinite" }}
-        />
-        <SpinBadge />
-      </div>
-    </div>
-  );
-}
-
 export default function Hero() {
   const { scrollY } = useScroll();
   const heroY = useTransform(scrollY, [0, 600], [0, 70]);
@@ -95,9 +37,10 @@ export default function Hero() {
       id="home"
       className="relative z-[5] flex min-h-screen flex-col justify-center px-[clamp(20px,4.5vw,64px)] pb-[90px] pt-[110px]"
     >
-      <div className="mx-auto grid w-full max-w-[1400px] grid-cols-1 items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
-        {/* ── left: editorial stack ── */}
-        <div>
+      {/* Single left-weighted column — the right half is deliberately left
+          open so the WebGL black hole reads as the hero's centrepiece. */}
+      <div className="mx-auto w-full max-w-[1400px]">
+        <div className="max-w-[min(100%,720px)]">
           {/* availability */}
           <div
             className="mb-[clamp(22px,4vh,40px)] inline-flex items-center gap-2.5 rounded-full border border-blue-glow/25 bg-blue-brand/[0.12] px-4 py-[7px] font-mono text-[11px] tracking-[0.06em] text-white/[0.78] backdrop-blur-sm sm:text-xs"
@@ -189,14 +132,6 @@ export default function Hero() {
             <SocialPill href={profile.socials.linkedin}>LinkedIn</SocialPill>
             <SocialPill href={`mailto:${profile.email}`}>{profile.email}</SocialPill>
           </div>
-        </div>
-
-        {/* ── right: living solar system ── */}
-        <div
-          className="hidden lg:block"
-          style={{ animation: "fadeUp 1.2s .8s both" }}
-        >
-          <HeroOrbital />
         </div>
       </div>
 

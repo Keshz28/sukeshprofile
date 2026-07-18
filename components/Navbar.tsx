@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { profile } from "@/lib/data";
 import ThemeToggle from "./theme/ThemeToggle";
 import { useClock } from "./ui/useClock";
+import MenuOverlay from "./ui/MenuOverlay";
 
 const LINKS = [
   { n: "01", label: "About", href: "#about" },
@@ -17,6 +18,7 @@ const LINKS = [
 export default function Navbar() {
   const [active, setActive] = useState("#home");
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const clock = useClock();
 
   useEffect(() => {
@@ -78,8 +80,8 @@ export default function Navbar() {
           </span>
         </a>
 
-        {/* numbered links */}
-        <div className="flex items-center gap-[clamp(10px,2vw,26px)]">
+        {/* numbered links — inline on desktop, folded into the overlay below */}
+        <div className="hidden items-center gap-[clamp(10px,2vw,26px)] md:flex">
           {LINKS.map((link) => (
             <a
               key={link.href}
@@ -104,14 +106,39 @@ export default function Navbar() {
           ))}
         </div>
 
-        {/* clock + theme */}
+        {/* clock + theme + menu */}
         <div className="flex shrink-0 items-center gap-3">
           <span className="hidden font-mono text-[11px] tracking-[0.1em] text-white/50 tabular-nums lg:inline">
             {clock}
           </span>
           <ThemeToggle />
+
+          <button
+            type="button"
+            data-cursor="hover"
+            onClick={() => setMenuOpen((v) => !v)}
+            aria-expanded={menuOpen}
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            className="group flex h-8 items-center gap-2 rounded-full border border-white/15 bg-white/[0.05] pl-3 pr-2.5 font-mono text-[10px] tracking-[0.16em] text-white/75 transition-colors duration-300 hover:border-white/30 hover:text-white"
+          >
+            {menuOpen ? "CLOSE" : "MENU"}
+            <span className="relative grid h-3 w-3.5 place-items-center">
+              <span
+                className={`absolute h-px w-full bg-current transition-transform duration-300 ${
+                  menuOpen ? "rotate-45" : "-translate-y-[3px]"
+                }`}
+              />
+              <span
+                className={`absolute h-px w-full bg-current transition-transform duration-300 ${
+                  menuOpen ? "-rotate-45" : "translate-y-[3px]"
+                }`}
+              />
+            </span>
+          </button>
         </div>
       </nav>
+
+      <MenuOverlay open={menuOpen} onClose={() => setMenuOpen(false)} />
     </motion.header>
   );
 }
