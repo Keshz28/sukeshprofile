@@ -1,23 +1,24 @@
 "use client";
 
 import { useTheme } from "../theme/useTheme";
-import AnimatedBackground from "./AnimatedBackground";
 import SunScene from "./SunScene";
 import Starfield from "./Starfield";
+import SpaceScene from "../webgl/SpaceScene";
 
 /**
  * Mounts the backdrop that matches the active theme:
- *   space → looping nebula video + cool starfield with meteors
- *   sun   → molten sun scene + golden dust motes
- * Unmounting the inactive scene fully stops the space video's decode work
- * while basking in the sun.
+ *   space → live WebGL universe (nebula + GPU stars + black hole) on desktop,
+ *           a static nebula gradient on mobile / reduced-motion
+ *   sun   → molten sun video scene + golden dust motes
+ * The DOM starfield layers foreground twinkle/meteors (space) or dust (sun)
+ * on top of whichever backdrop is active.
  */
 export default function SceneManager() {
   const theme = useTheme();
 
   return (
     <>
-      {theme === "sun" ? <SunScene /> : <AnimatedBackground />}
+      {theme === "sun" ? <SunScene /> : <SpaceScene />}
       <Starfield theme={theme} />
     </>
   );
