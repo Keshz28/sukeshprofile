@@ -51,6 +51,8 @@ export default function SmoothScroll() {
         const target = document.querySelector(hash);
         if (!target) return;
         e.preventDefault();
+        // TR1 — punch a hyperspace jump as the section swap begins
+        window.dispatchEvent(new CustomEvent("kesh:warp"));
         lenis.scrollTo(target as HTMLElement, { offset: -72 });
       };
       document.addEventListener("click", onClick);

@@ -1,5 +1,6 @@
 import SceneManager from "@/components/ui/SceneManager";
 import BootSequence from "@/components/ui/BootSequence";
+import WarpFlash from "@/components/ui/WarpFlash";
 import SmoothScroll from "@/components/ui/SmoothScroll";
 import PointerFX from "@/components/ui/PointerFX";
 import Grain from "@/components/ui/Grain";
@@ -28,6 +29,7 @@ export default function Home() {
       <SceneManager />
       <PointerFX />
       <Grain />
+      <WarpFlash />
       <ScrollProgress />
       <SectionCounter />
 

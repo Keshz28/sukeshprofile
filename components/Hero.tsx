@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { profile } from "@/lib/data";
 import Magnetic from "./ui/Magnetic";
+import GravityText from "./ui/GravityText";
 
 function RoleRotator() {
   const [i, setI] = useState(0);
@@ -53,31 +54,23 @@ export default function Hero() {
             Open to opportunities · Available worldwide
           </div>
 
-          {/* name — one clean stack: solid first name, gradient surname */}
+          {/* name — glyphs arrive as debris, settle, then bend around the cursor */}
           <motion.h1
             style={{ y: heroY }}
             className="m-0 font-display text-[clamp(3rem,9.5vw,8.5rem)] font-bold uppercase leading-[0.9] tracking-[-0.03em] will-change-transform"
           >
-            <span className="block overflow-hidden">
-              <span
-                className="inline-block text-white"
-                style={{ animation: "riseIn 1s .15s both", textShadow: "var(--halo)" }}
-              >
-                Sukesh
-              </span>
-            </span>
-            <span className="block overflow-hidden">
-              <span
-                className="bg-brand-gradient inline-block bg-clip-text text-transparent"
-                style={{
-                  backgroundSize: "220% 220%",
-                  animation:
-                    "riseIn 1s .3s both, gradShift 7s 1.3s ease-in-out infinite",
-                }}
-              >
-                Surase
-              </span>
-            </span>
+            <GravityText
+              text="Sukesh"
+              delay={0.15}
+              className="block text-white"
+              style={{ textShadow: "var(--halo)" }}
+            />
+            <GravityText
+              text="Surase"
+              delay={0.32}
+              gradient={["#3b82f6", "#7c3aed", "#ec4899"]}
+              className="block"
+            />
           </motion.h1>
 
           {/* role */}

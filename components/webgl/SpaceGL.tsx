@@ -218,13 +218,45 @@ function Supernova() {
   );
 }
 
+/* ───────────────────────── warp jump (TR1) ──────────────────────────────── */
+// Listens for `kesh:warp` and briefly widens the FOV + kicks the camera back,
+// so navigating to a section reads as a short hyperspace lurch.
+function WarpRig() {
+  const { camera } = useThree();
+  const warp = useRef(0);
+  const baseFov = useRef<number | null>(null);
+
+  useEffect(() => {
+    const onWarp = () => {
+      warp.current = 1;
+    };
+    window.addEventListener("kesh:warp", onWarp);
+    return () => window.removeEventListener("kesh:warp", onWarp);
+  }, []);
+
+  useFrame((_, dt) => {
+    const cam = camera as THREE.PerspectiveCamera;
+    if (baseFov.current === null) baseFov.current = cam.fov;
+    if (warp.current > 0.001) {
+      warp.current = Math.max(0, warp.current - dt * 1.5);
+      const e = warp.current * warp.current;
+      cam.fov = baseFov.current + e * 26;
+      cam.position.z = 6 + e * 1.8;
+      cam.updateProjectionMatrix();
+    } else if (cam.fov !== baseFov.current) {
+      cam.fov = baseFov.current;
+      cam.updateProjectionMatrix();
+    }
+  });
+  return null;
+}
+
 /* ───────────────────────── camera parallax rig ──────────────────────────── */
 function CameraRig() {
   const { camera } = useThree();
   const pointer = useRef({ x: 0, y: 0 });
 
-  useMemo(() => {
-    if (typeof window === "undefined") return;
+  useEffect(() => {
     const onMove = (e: PointerEvent) => {
       pointer.current.x = (e.clientX / window.innerWidth - 0.5) * 2;
       pointer.current.y = (e.clientY / window.innerHeight - 0.5) * 2;
@@ -326,6 +358,7 @@ export default function SpaceGL() {
         <BlackHole />
         <Supernova />
         <CameraRig />
+        <WarpRig />
         <EffectComposer>
           <LensEffect />
           <Bloom
