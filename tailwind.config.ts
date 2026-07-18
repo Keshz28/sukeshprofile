@@ -24,7 +24,8 @@ const config: Config = {
         red: { brand: v("--acc3"), glow: v("--acc3-glow") },
       },
       fontFamily: {
-        display: ["var(--font-space-grotesk)", "system-ui", "sans-serif"],
+        display: ["var(--font-display)", "system-ui", "sans-serif"],
+        grotesk: ["var(--font-space-grotesk)", "system-ui", "sans-serif"],
         body: ["var(--font-inter)", "system-ui", "sans-serif"],
         mono: ["var(--font-space-mono)", "ui-monospace", "monospace"],
       },

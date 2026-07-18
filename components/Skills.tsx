@@ -4,6 +4,9 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { skillCategories } from "@/lib/data";
 import Reveal from "./ui/Reveal";
+import Constellation from "./ui/Constellation";
+import Scramble from "./ui/Scramble";
+import SplitReveal from "./ui/SplitReveal";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -18,12 +21,15 @@ export default function Skills() {
     >
       <Reveal className="mb-[clamp(28px,5vh,52px)] flex flex-wrap items-end justify-between gap-3.5">
         <div>
-          <div className="mb-4 font-mono text-xs tracking-[0.2em] text-blue-glow">
-            ( 02 — SKILLS )
-          </div>
-          <h2 className="m-0 font-display text-[clamp(2rem,5.5vw,4rem)] font-bold leading-[0.95] tracking-[-0.02em]">
-            What I bring
-          </h2>
+          <Scramble
+            text="( 02 — SKILLS )"
+            className="mb-4 block font-mono text-xs tracking-[0.2em] text-blue-glow"
+          />
+          <SplitReveal
+            as="h2"
+            text="What I bring"
+            className="m-0 font-display text-[clamp(2rem,5.5vw,4rem)] font-bold leading-[0.95] tracking-[-0.02em]"
+          />
         </div>
         <span className="font-mono text-xs tracking-[0.12em] text-white/50">
           [ {String(tab + 1).padStart(2, "0")} / {String(skillCategories.length).padStart(2, "0")} ]
@@ -72,26 +78,34 @@ export default function Skills() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.35, ease: EASE }}
-              className="grid gap-x-[clamp(24px,4vw,64px)] gap-y-6 p-[clamp(22px,3.5vw,44px)] sm:grid-cols-2"
+              className="grid items-center gap-x-[clamp(28px,4vw,64px)] gap-y-8 p-[clamp(22px,3.5vw,44px)] lg:grid-cols-[1.2fr_0.8fr]"
             >
-              {cat.skills.map((sk, i) => (
-                <div key={sk.name}>
-                  <div className="mb-[8px] flex items-baseline justify-between font-mono text-[13px] text-white/75">
-                    <span>{sk.name}</span>
-                    <span className="text-[11px] text-blue-glow tabular-nums">
-                      {sk.level}%
-                    </span>
+              {/* proficiency bars */}
+              <div className="grid gap-x-[clamp(24px,3vw,48px)] gap-y-6 sm:grid-cols-2">
+                {cat.skills.map((sk, i) => (
+                  <div key={sk.name}>
+                    <div className="mb-[8px] flex items-baseline justify-between font-mono text-[13px] text-white/75">
+                      <span>{sk.name}</span>
+                      <span className="text-[11px] text-blue-glow tabular-nums">
+                        {sk.level}%
+                      </span>
+                    </div>
+                    <div className="h-[7px] overflow-hidden rounded-full bg-white/[0.08]">
+                      <motion.div
+                        className="h-full rounded-full bg-brand-gradient"
+                        initial={{ width: 0 }}
+                        animate={{ width: `${sk.level}%` }}
+                        transition={{ duration: 0.9, delay: 0.1 + i * 0.07, ease: EASE }}
+                      />
+                    </div>
                   </div>
-                  <div className="h-[7px] overflow-hidden rounded-full bg-white/[0.08]">
-                    <motion.div
-                      className="h-full rounded-full bg-brand-gradient"
-                      initial={{ width: 0 }}
-                      animate={{ width: `${sk.level}%` }}
-                      transition={{ duration: 0.9, delay: 0.1 + i * 0.07, ease: EASE }}
-                    />
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
+
+              {/* star map of the same skills (decorative, lg+ only) */}
+              <div className="hidden lg:block">
+                <Constellation title={cat.title} skills={cat.skills} />
+              </div>
             </motion.div>
           </AnimatePresence>
         </div>

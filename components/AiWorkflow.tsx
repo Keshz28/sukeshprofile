@@ -3,6 +3,7 @@
 import { aiWorkflow, type AiTool, type Accent } from "@/lib/data";
 import Reveal from "./ui/Reveal";
 import TiltCard from "./ui/TiltCard";
+import Scramble from "./ui/Scramble";
 
 // Full literal class strings per accent so Tailwind's scanner keeps them.
 const ACCENT: Record<Accent, { text: string; dot: string }> = {
@@ -76,9 +77,10 @@ export default function AiWorkflow() {
       className="relative z-[5] mx-auto max-w-[1400px] px-[clamp(20px,4.5vw,64px)] py-[clamp(60px,10vh,120px)]"
     >
       <Reveal className="mb-[clamp(20px,4vh,44px)]">
-        <div className="mb-4 font-mono text-xs tracking-[0.2em] text-blue-glow">
-          ( 03 — AI WORKFLOW )
-        </div>
+        <Scramble
+          text="( 03 — AI WORKFLOW )"
+          className="mb-4 block font-mono text-xs tracking-[0.2em] text-blue-glow"
+        />
         <h2 className="m-0 max-w-[16ch] font-display text-[clamp(2rem,5.5vw,4rem)] font-bold leading-[0.95] tracking-[-0.02em]">
           {aiWorkflow.heading}
         </h2>

@@ -106,11 +106,53 @@ body {
     0 0 2px rgba(255, 247, 232, 0.4);
 }
 
-/* Theme swap via the View Transitions API — a slow, cinematic cross-dissolve */
+/* ── Theme swap via the View Transitions API ──────────────────────────────
+   Default: a slow, cinematic cross-dissolve. When html[data-vt] is set the
+   swap becomes directional, radiating from the toggle (--vt-x/--vt-y):
+     to-sun   → SUNBURST: the new light theme floods outward from the click,
+                like the sun igniting.
+     to-space → ECLIPSE: the old bright page collapses INTO the click point,
+                unveiling deep space that was behind it all along.          */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation-duration: 0.65s;
   animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes vt-expand {
+  from {
+    clip-path: circle(0px at var(--vt-x, 90vw) var(--vt-y, 32px));
+  }
+  to {
+    clip-path: circle(var(--vt-r, 150vmax) at var(--vt-x, 90vw) var(--vt-y, 32px));
+  }
+}
+@keyframes vt-contract {
+  from {
+    clip-path: circle(var(--vt-r, 150vmax) at var(--vt-x, 90vw) var(--vt-y, 32px));
+  }
+  to {
+    clip-path: circle(0px at var(--vt-x, 90vw) var(--vt-y, 32px));
+  }
+}
+
+/* Sunburst: old (space) sits still underneath; new (sun) expands over it. */
+html[data-vt="to-sun"]::view-transition-old(root) {
+  animation: none;
+}
+html[data-vt="to-sun"]::view-transition-new(root) {
+  animation: vt-expand 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Eclipse: new (space) is revealed underneath; old (sun) shrinks away into
+   the toggle. The new snapshot must sit BELOW the old one, so invert the
+   default paint order for this direction. */
+html[data-vt="to-space"]::view-transition-new(root) {
+  animation: none;
+}
+html[data-vt="to-space"]::view-transition-old(root) {
+  animation: vt-contract 0.9s cubic-bezier(0.55, 0, 0.68, 0.19) both;
+  z-index: 1;
 }
 
 /* Custom selection */
@@ -297,5 +339,232 @@ body.cursor-none * {
     background-image: linear-gradient(rgb(var(--fg) / 0.04) 1px, transparent 1px),
       linear-gradient(90deg, rgb(var(--fg) / 0.04) 1px, transparent 1px);
     background-size: 56px 56px;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   THEMED INTERACTIONS — comet nav, galaxy/heat CTAs, drifting project cards.
+   Space and Sun each get their own physics; all of it sits out under
+   prefers-reduced-motion.
+   ════════════════════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* ── nav links ── space: a comet shoots along the underline on hover;
+        sun: a lens flare sweeps across the label. */
+  .nav-fx::after {
+    content: "";
+    position: absolute;
+    bottom: -8px;
+    left: -6px;
+    width: 5px;
+    height: 5px;
+    border-radius: 9999px;
+    opacity: 0;
+    pointer-events: none;
+  }
+  :root:not([data-theme="sun"]) .nav-fx:hover::after {
+    background: #fff;
+    box-shadow:
+      0 0 6px 1px rgba(150, 190, 255, 0.95),
+      -9px 0 10px rgba(150, 190, 255, 0.5),
+      -18px 0 16px rgba(150, 190, 255, 0.22);
+    animation: cometAcross 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  @keyframes cometAcross {
+    from { left: -6px; opacity: 0; }
+    18%  { opacity: 1; }
+    to   { left: calc(100% + 2px); opacity: 0; }
+  }
+  :root[data-theme="sun"] .nav-fx { overflow: hidden; }
+  :root[data-theme="sun"] .nav-fx:hover::after {
+    top: -30%;
+    bottom: auto;
+    height: 160%;
+    width: 14px;
+    border-radius: 0;
+    background: linear-gradient(
+      100deg,
+      transparent,
+      rgba(255, 214, 130, 0.55),
+      rgba(255, 255, 255, 0.85),
+      rgba(255, 214, 130, 0.55),
+      transparent
+    );
+    filter: blur(2.5px);
+    transform: skewX(-18deg);
+    animation: flareSweep 0.55s ease-out forwards;
+  }
+  @keyframes flareSweep {
+    from { left: -25%; opacity: 0; }
+    20%  { opacity: 0.9; }
+    to   { left: 115%; opacity: 0; }
+  }
+
+  /* ── hero primary CTA ── space: hover ignites a swirling mini-galaxy with
+        orbiting star specks; sun: a breathing burst of light. */
+  .cta-galaxy { position: relative; overflow: hidden; isolation: isolate; }
+  .cta-galaxy > * { position: relative; z-index: 2; }
+  .cta-galaxy::before {
+    content: "";
+    position: absolute;
+    inset: -45%;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    background: conic-gradient(
+      from 0deg,
+      transparent 0deg,
+      rgba(124, 58, 237, 0.55) 70deg,
+      rgba(59, 130, 246, 0.6) 150deg,
+      transparent 215deg,
+      rgba(236, 72, 153, 0.5) 300deg,
+      transparent 360deg
+    );
+    filter: blur(12px);
+    animation: swirlSpin 2.8s linear infinite;
+    animation-play-state: paused;
+  }
+  .cta-galaxy::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 1;
+    width: 3px;
+    height: 3px;
+    border-radius: 9999px;
+    background: #fff;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    box-shadow:
+      26px -9px 0 -0.5px #fff,
+      -30px 7px 0 -1px #cfe0ff,
+      9px 20px 0 -1px #ffd6f2,
+      -13px -20px 0 -1.5px #fff,
+      40px 6px 0 -1.5px #cfe0ff;
+    animation: swirlSpin 3.6s linear infinite reverse;
+    animation-play-state: paused;
+  }
+  .cta-galaxy:hover::before,
+  .cta-galaxy:hover::after {
+    opacity: 1;
+    animation-play-state: running;
+  }
+  @keyframes swirlSpin { to { transform: rotate(360deg); } }
+
+  :root[data-theme="sun"] .cta-galaxy::before {
+    inset: -25%;
+    background: radial-gradient(
+      circle,
+      rgba(255, 244, 214, 0.95) 0%,
+      rgba(255, 186, 74, 0.55) 42%,
+      transparent 72%
+    );
+    filter: blur(6px);
+    animation: burstPulse 1.3s ease-in-out infinite;
+    animation-play-state: paused;
+  }
+  :root[data-theme="sun"] .cta-galaxy::after {
+    box-shadow: none;
+    left: -10%;
+    top: -30%;
+    width: 12px;
+    height: 160%;
+    border-radius: 0;
+    background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.9), transparent);
+    transform: skewX(-16deg);
+    animation: flareSweep 0.6s ease-out forwards;
+  }
+  @keyframes burstPulse {
+    0%, 100% { transform: scale(1); opacity: 0.85; }
+    50%      { transform: scale(1.12); opacity: 1; }
+  }
+
+  /* ── hero ghost CTA ── space: a gravitational lens breathes inward around
+        it; sun: heat rings radiate off it. */
+  .cta-gravity { position: relative; }
+  .cta-gravity::before {
+    content: "";
+    position: absolute;
+    inset: -7px;
+    border-radius: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+    box-shadow:
+      inset 0 0 18px rgba(96, 165, 250, 0.4),
+      0 0 26px rgba(96, 165, 250, 0.25);
+  }
+  .cta-gravity:hover::before {
+    opacity: 1;
+    animation: gravPull 1.7s ease-in-out infinite;
+  }
+  @keyframes gravPull {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(0.955); }
+  }
+  :root[data-theme="sun"] .cta-gravity::before {
+    box-shadow: none;
+    border: 1.5px solid rgba(234, 140, 20, 0.6);
+  }
+  :root[data-theme="sun"] .cta-gravity:hover::before {
+    animation: heatRing 1.15s ease-out infinite;
+  }
+  @keyframes heatRing {
+    from { transform: scale(0.92); opacity: 0.85; }
+    to   { transform: scale(1.28); opacity: 0; }
+  }
+
+  /* ── project cards ── space: asteroids drift on a slow idle float, and a
+        starburst flashes on hover; sun: a polished reflective sheen sweeps. */
+  .card-fx { animation: cardDrift 11s ease-in-out infinite; }
+  @keyframes cardDrift {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50%      { transform: translateY(-5px) rotate(0.18deg); }
+  }
+  .card-fx:hover { animation-play-state: paused; }
+  .card-fx::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    opacity: 0;
+    pointer-events: none;
+    border-radius: inherit;
+  }
+  :root:not([data-theme="sun"]) .card-fx:hover::after {
+    background:
+      radial-gradient(140px 140px at 78% 22%, rgba(150, 190, 255, 0.18), transparent 70%),
+      radial-gradient(60px 60px at 78% 22%, rgba(255, 255, 255, 0.16), transparent 70%);
+    animation: starburst 0.7s ease-out forwards;
+  }
+  @keyframes starburst {
+    from { opacity: 0; transform: scale(0.8); }
+    35%  { opacity: 1; }
+    to   { opacity: 0.55; transform: scale(1); }
+  }
+  :root[data-theme="sun"] .card-fx { overflow: hidden; }
+  :root[data-theme="sun"] .card-fx:hover::after {
+    left: -30%;
+    width: 34%;
+    height: 100%;
+    inset: auto;
+    top: 0;
+    background: linear-gradient(
+      100deg,
+      transparent,
+      rgba(255, 244, 214, 0.5),
+      rgba(255, 255, 255, 0.65),
+      rgba(255, 244, 214, 0.5),
+      transparent
+    );
+    filter: blur(6px);
+    transform: skewX(-14deg);
+    animation: sheenSweep 0.9s ease-out forwards;
+  }
+  @keyframes sheenSweep {
+    from { left: -34%; opacity: 0; }
+    15%  { opacity: 1; }
+    to   { left: 130%; opacity: 0; }
   }
 }

@@ -5,6 +5,7 @@ import { about, profile } from "@/lib/data";
 import Reveal from "./ui/Reveal";
 import TiltCard from "./ui/TiltCard";
 import { useClock } from "./ui/useClock";
+import Scramble from "./ui/Scramble";
 
 // Counts up from 0 → target the first time it scrolls into view, preserving any
 // non-numeric suffix ("+", "%").
@@ -75,9 +76,10 @@ export default function About() {
       className="relative z-[5] mx-auto max-w-[1400px] px-[clamp(20px,4.5vw,64px)] py-[clamp(70px,12vh,140px)]"
     >
       <Reveal className="mb-[clamp(28px,5vh,52px)]">
-        <div className="mb-4 font-mono text-xs tracking-[0.2em] text-blue-glow">
-          ( 01 — ABOUT )
-        </div>
+        <Scramble
+          text="( 01 — ABOUT )"
+          className="mb-4 block font-mono text-xs tracking-[0.2em] text-blue-glow"
+        />
         <h2 className="m-0 font-display text-[clamp(2rem,5.5vw,4rem)] font-bold leading-[0.95] tracking-[-0.02em]">
           Building across the{" "}
           <span className="bg-brand-gradient bg-clip-text text-transparent">

@@ -1,4 +1,5 @@
 import SceneManager from "@/components/ui/SceneManager";
+import SmoothScroll from "@/components/ui/SmoothScroll";
 import PointerFX from "@/components/ui/PointerFX";
 import Grain from "@/components/ui/Grain";
 import SectionCounter from "@/components/ui/SectionCounter";
@@ -16,6 +17,9 @@ import Contact from "@/components/Contact";
 export default function Home() {
   return (
     <>
+      {/* momentum smooth-scroll + GSAP ticker bridge */}
+      <SmoothScroll />
+
       {/* fixed background + overlay stack (theme-aware: space ↔ sun) */}
       <SceneManager />
       <PointerFX />

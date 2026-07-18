@@ -238,9 +238,9 @@ export default function Hero() {
               <a
                 href="#projects"
                 data-cursor="hover"
-                className="inline-flex items-center gap-2 rounded-[14px] bg-brand-gradient px-[26px] py-3.5 font-display text-[15px] font-bold text-ink"
+                className="cta-galaxy inline-flex items-center gap-2 rounded-[14px] bg-brand-gradient px-[26px] py-3.5 font-display text-[15px] font-bold text-ink"
               >
-                View Projects ↗
+                <span>View Projects ↗</span>
               </a>
             </Magnetic>
             <Magnetic>
@@ -248,7 +248,7 @@ export default function Hero() {
                 href={profile.resumeUrl}
                 download
                 data-cursor="hover"
-                className="inline-flex items-center gap-2 rounded-[14px] border border-white/15 bg-white/5 px-[26px] py-3.5 font-display text-[15px] font-semibold text-white backdrop-blur-md"
+                className="cta-gravity inline-flex items-center gap-2 rounded-[14px] border border-white/15 bg-white/5 px-[26px] py-3.5 font-display text-[15px] font-semibold text-white backdrop-blur-md"
               >
                 ↓ Download Resume
               </a>

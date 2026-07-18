@@ -4,6 +4,7 @@ import { profile, contact } from "@/lib/data";
 import Reveal from "./ui/Reveal";
 import Magnetic from "./ui/Magnetic";
 import { useClock } from "./ui/useClock";
+import Scramble from "./ui/Scramble";
 
 // Strip protocol / trailing slash for a cleaner display value.
 const pretty = (url: string) => url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
@@ -55,9 +56,10 @@ export default function Contact() {
       className="relative z-[5] mx-auto max-w-[1400px] px-[clamp(20px,4.5vw,64px)] pt-[clamp(70px,14vh,160px)]"
     >
       <Reveal>
-        <div className="mb-[clamp(20px,4vh,38px)] font-mono text-xs tracking-[0.2em] text-blue-glow">
-          ( 06 — LET&apos;S CONNECT )
-        </div>
+        <Scramble
+          text="( 06 — LET'S CONNECT )"
+          className="mb-[clamp(20px,4vh,38px)] block font-mono text-xs tracking-[0.2em] text-blue-glow"
+        />
 
         <div className="flex flex-wrap items-center gap-[clamp(24px,5vw,72px)]">
           <a

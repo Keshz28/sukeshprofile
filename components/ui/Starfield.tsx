@@ -52,6 +52,11 @@ export default function Starfield({ theme = "space" }: { theme?: Theme }) {
     let scrollVel = 0;
     let lastY = window.scrollY;
     let raf = 0;
+    // Pointer parallax — deeper layers shift more, eased so it feels weighty.
+    let ptx = 0;
+    let pty = 0;
+    let px = 0;
+    let py = 0;
 
     const build = () => {
       w = window.innerWidth;
@@ -90,11 +95,22 @@ export default function Starfield({ theme = "space" }: { theme?: Theme }) {
       lastY = y;
     };
 
+    const onPointer = (e: PointerEvent) => {
+      // -1..1 from viewport centre → a gentle max drift for the deepest layer.
+      ptx = (e.clientX / w - 0.5) * 2;
+      pty = (e.clientY / h - 0.5) * 2;
+    };
+
     const loop = () => {
       raf = requestAnimationFrame(loop);
       const now = Date.now() * 0.001;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       const vel = scrollVel;
+      // Ease the parallax offset toward the pointer (space drifts opposite
+      // the cursor for depth; sun dust leans with the light, same direction).
+      const drift = sun ? 10 : -16;
+      px += (ptx * drift - px) * 0.04;
+      py += (pty * drift - py) * 0.04;
 
       for (const s of stars) {
         // space: stars rise (warp up). sun: dust sinks with a lazy sway.
@@ -111,8 +127,8 @@ export default function Starfield({ theme = "space" }: { theme?: Theme }) {
           ? Math.max(0, Math.sin(now * s.tw * 2 + s.ph)) ** 3 // rare hard glints
           : 0.6 + 0.4 * Math.sin(now * s.tw + s.ph);
         const a = Math.max(0, Math.min(1, s.base * twinkle));
-        const sx = s.x * dpr;
-        const sy = s.y * dpr;
+        const sx = (s.x + px * s.z) * dpr;
+        const sy = (s.y + py * s.z) * dpr;
         const streak = reduce ? 0 : Math.min(Math.abs(vel) * s.z * 0.9, 90);
         if (streak > 2) {
           ctx.strokeStyle = `rgba(${s.col},${a})`;
@@ -177,10 +193,12 @@ export default function Starfield({ theme = "space" }: { theme?: Theme }) {
     raf = requestAnimationFrame(loop);
     window.addEventListener("resize", build, { passive: true });
     window.addEventListener("scroll", onScroll, { passive: true });
+    if (!reduce) window.addEventListener("pointermove", onPointer, { passive: true });
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", build);
       window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("pointermove", onPointer);
     };
   }, [theme]);
 

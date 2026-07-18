@@ -85,7 +85,7 @@ export default function Navbar() {
               key={link.href}
               href={link.href}
               data-cursor="hover"
-              className={`group relative whitespace-nowrap font-mono text-[11px] tracking-[0.08em] transition-colors duration-200 sm:text-xs ${
+              className={`nav-fx group relative whitespace-nowrap font-mono text-[11px] tracking-[0.08em] transition-colors duration-200 sm:text-xs ${
                 active === link.href
                   ? "text-white"
                   : "text-white/60 hover:text-white"

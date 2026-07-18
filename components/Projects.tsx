@@ -5,6 +5,8 @@ import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { projects, type Project, type Accent } from "@/lib/data";
 import Reveal from "./ui/Reveal";
+import Scramble from "./ui/Scramble";
+import SplitReveal from "./ui/SplitReveal";
 
 const ACCENT_BAR: Record<Accent, string> = {
   blue: "from-blue-brand to-blue-glow",
@@ -45,12 +47,15 @@ export default function Projects() {
     >
       <Reveal className="mb-[clamp(24px,4.5vh,52px)] flex flex-wrap items-end justify-between gap-3.5">
         <div>
-          <div className="mb-4 font-mono text-xs tracking-[0.2em] text-blue-glow">
-            ( 04 — SELECTED WORK )
-          </div>
-          <h2 className="m-0 font-display text-[clamp(2rem,6vw,4.6rem)] font-bold leading-[0.92] tracking-[-0.02em]">
-            Projects
-          </h2>
+          <Scramble
+            text="( 04 — SELECTED WORK )"
+            className="mb-4 block font-mono text-xs tracking-[0.2em] text-blue-glow"
+          />
+          <SplitReveal
+            as="h2"
+            text="Projects"
+            className="m-0 font-display text-[clamp(2rem,6vw,4.6rem)] font-bold leading-[0.92] tracking-[-0.02em]"
+          />
         </div>
         <span className="font-mono text-xs tracking-[0.12em] text-white/50">
           [ {String(projects.length).padStart(2, "0")} — 2026 ]
@@ -107,7 +112,8 @@ function StackCard({
         data-cursor="hover"
         onClick={onOpen}
         aria-label={`View details for ${project.title}`}
-        className="group relative block w-full overflow-hidden rounded-[24px] border border-white/12 bg-[var(--panel)] text-left shadow-[var(--shadow-lg)] backdrop-blur-2xl transition-[border-color,transform] duration-300 hover:border-white/25 hover:-translate-y-1"
+        className="card-fx group relative block w-full overflow-hidden rounded-[24px] border border-white/12 bg-[var(--panel)] text-left shadow-[var(--shadow-lg)] backdrop-blur-2xl transition-[border-color] duration-300 hover:border-white/25"
+        style={{ animationDelay: `${index * 1.7}s` }}
       >
         <div className={`h-[5px] bg-gradient-to-r ${bar}`} />
 

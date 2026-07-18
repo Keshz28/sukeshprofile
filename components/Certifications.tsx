@@ -3,6 +3,8 @@
 import { certifications, education } from "@/lib/data";
 import Reveal from "./ui/Reveal";
 import TiltCard from "./ui/TiltCard";
+import Scramble from "./ui/Scramble";
+import SplitReveal from "./ui/SplitReveal";
 
 type Credential = {
   kind: string;
@@ -34,12 +36,15 @@ export default function Certifications() {
       className="relative z-[5] mx-auto max-w-[1400px] px-[clamp(20px,4.5vw,64px)] py-[clamp(60px,10vh,120px)]"
     >
       <Reveal className="mb-[clamp(28px,5vh,52px)]">
-        <div className="mb-4 font-mono text-xs tracking-[0.2em] text-blue-glow">
-          ( 05 — CREDENTIALS )
-        </div>
-        <h2 className="m-0 font-display text-[clamp(2rem,5.5vw,4rem)] font-bold leading-[0.95] tracking-[-0.02em]">
-          Proof of orbit
-        </h2>
+        <Scramble
+          text="( 05 — CREDENTIALS )"
+          className="mb-4 block font-mono text-xs tracking-[0.2em] text-blue-glow"
+        />
+        <SplitReveal
+          as="h2"
+          text="Proof of orbit"
+          className="m-0 font-display text-[clamp(2rem,5.5vw,4rem)] font-bold leading-[0.95] tracking-[-0.02em]"
+        />
       </Reveal>
 
       {/* ── timeline: gradient rail, node per credential ── */}

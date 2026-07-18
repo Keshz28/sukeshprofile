@@ -1,8 +1,17 @@
 import type { Metadata, Viewport } from "next";
-import { Space_Grotesk, Space_Mono, Inter } from "next/font/google";
+import { Bricolage_Grotesque, Space_Grotesk, Space_Mono, Inter } from "next/font/google";
 import { profile } from "@/lib/data";
 import "./globals.css";
 
+// New statement display face — expressive, editorial, great at huge sizes.
+const bricolage = Bricolage_Grotesque({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-display",
+  display: "swap",
+});
+
+// Kept for the numbered nav / secondary UI accents.
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -68,7 +77,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${spaceGrotesk.variable} ${spaceMono.variable} ${inter.variable}`}
+      className={`${bricolage.variable} ${spaceGrotesk.variable} ${spaceMono.variable} ${inter.variable}`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInit }} />

@@ -15,7 +15,13 @@ export default function ThemeToggle() {
     <button
       type="button"
       data-cursor="hover"
-      onClick={() => setTheme(isSun ? "space" : "sun")}
+      onClick={(e) => {
+        const r = e.currentTarget.getBoundingClientRect();
+        setTheme(isSun ? "space" : "sun", {
+          x: r.left + r.width / 2,
+          y: r.top + r.height / 2,
+        });
+      }}
       aria-label={isSun ? "Switch to deep-space mode" : "Switch to near-the-sun mode"}
       title={isSun ? "Back to deep space" : "Fly near the sun"}
       className="group relative grid h-8 w-8 shrink-0 place-items-center overflow-hidden rounded-full border border-white/15 bg-white/[0.05] transition-colors duration-300 hover:border-white/30 hover:bg-white/[0.1]"
