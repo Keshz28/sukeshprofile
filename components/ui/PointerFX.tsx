@@ -161,16 +161,19 @@ export default function PointerFX() {
             "radial-gradient(460px circle at var(--x, 50vw) var(--y, 25vh), rgb(var(--spot) / 0.10), transparent 70%)",
         }}
       />
+      {/* Cursor layers must outrank every overlay (takeover 140, menu 150,
+          konami 160, boot 200) — we hide the native cursor globally, so if
+          these sit underneath a panel the user is left with no pointer. */}
       <canvas
         ref={canvasRef}
         aria-hidden
-        className="pointer-events-none fixed inset-0 z-[95]"
+        className="pointer-events-none fixed inset-0 z-[290]"
         style={{ mixBlendMode: "screen" }}
       />
       <div
         ref={cursorRef}
         aria-hidden
-        className="pointer-events-none fixed left-[-100px] top-0 z-[100] h-[13px] w-[13px] rounded-full"
+        className="pointer-events-none fixed left-[-100px] top-0 z-[300] h-[13px] w-[13px] rounded-full"
         style={{
           background: "#e7e9f0",
           transform: "translate(-50%,-50%)",
