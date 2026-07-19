@@ -36,7 +36,7 @@ export default function Hero() {
   return (
     <section
       id="home"
-      className="relative z-[5] flex min-h-screen flex-col justify-center px-[clamp(20px,4.5vw,64px)] pb-[90px] pt-[110px]"
+      className="relative z-[5] flex min-h-screen flex-col justify-center px-[clamp(20px,4.5vw,64px)] pb-[clamp(54px,7vh,88px)] pt-[clamp(92px,11vh,120px)]"
     >
       {/* Single left-weighted column — the right half is deliberately left
           open so the WebGL black hole reads as the hero's centrepiece. */}
@@ -44,7 +44,7 @@ export default function Hero() {
         <div className="max-w-[min(100%,720px)]">
           {/* availability */}
           <div
-            className="mb-[clamp(22px,4vh,40px)] inline-flex items-center gap-2.5 rounded-full border border-blue-glow/25 bg-blue-brand/[0.12] px-4 py-[7px] font-mono text-[11px] tracking-[0.06em] text-white/[0.78] backdrop-blur-sm sm:text-xs"
+            className="mb-[clamp(16px,2.8vh,32px)] inline-flex items-center gap-2.5 rounded-full border border-blue-glow/25 bg-blue-brand/[0.12] px-4 py-[7px] font-mono text-[11px] tracking-[0.06em] text-white/[0.78] backdrop-blur-sm sm:text-xs"
             style={{ animation: "fadeUp 1s .1s both" }}
           >
             <span className="relative flex h-2 w-2">
@@ -57,7 +57,7 @@ export default function Hero() {
           {/* name — glyphs arrive as debris, settle, then bend around the cursor */}
           <motion.h1
             style={{ y: heroY }}
-            className="m-0 font-display text-[clamp(3rem,9.5vw,8.5rem)] font-bold uppercase leading-[0.9] tracking-[-0.03em] will-change-transform"
+            className="m-0 font-display text-[clamp(2.75rem,8.4vw,7.4rem)] font-bold uppercase leading-[0.9] tracking-[-0.03em] will-change-transform"
           >
             <GravityText
               text="Sukesh"
@@ -75,7 +75,7 @@ export default function Hero() {
 
           {/* role */}
           <div
-            className="mt-[clamp(20px,3.5vh,36px)] flex flex-wrap items-baseline gap-3 font-display text-[clamp(1.15rem,3vw,2rem)] font-semibold"
+            className="mt-[clamp(14px,2.4vh,28px)] flex flex-wrap items-baseline gap-3 font-display text-[clamp(1.1rem,2.7vw,1.85rem)] font-semibold"
             style={{ animation: "fadeUp 1s .55s both" }}
           >
             <span className="text-white/55">I&apos;m a</span>
@@ -84,7 +84,7 @@ export default function Hero() {
 
           {/* tagline */}
           <p
-            className="mt-[clamp(18px,3vh,30px)] max-w-[560px] text-pretty text-[clamp(1rem,1.5vw,1.18rem)] leading-[1.65] text-white/[0.62]"
+            className="mt-[clamp(12px,2.2vh,24px)] max-w-[540px] text-pretty text-[clamp(0.95rem,1.4vw,1.1rem)] leading-[1.6] text-white/[0.62]"
             style={{ animation: "fadeUp 1s .7s both" }}
           >
             {profile.tagline}
@@ -92,7 +92,7 @@ export default function Hero() {
 
           {/* CTAs */}
           <div
-            className="mt-[clamp(26px,4.5vh,44px)] flex flex-wrap gap-3.5"
+            className="mt-[clamp(18px,3.2vh,34px)] flex flex-wrap gap-3.5"
             style={{ animation: "fadeUp 1s .82s both" }}
           >
             <Magnetic>
@@ -118,7 +118,7 @@ export default function Hero() {
 
           {/* socials */}
           <div
-            className="mt-[clamp(24px,4vh,36px)] flex flex-wrap gap-2.5"
+            className="mt-[clamp(14px,2.4vh,26px)] flex flex-wrap gap-2.5"
             style={{ animation: "fadeUp 1s .95s both" }}
           >
             <SocialPill href={profile.socials.github}>GitHub</SocialPill>

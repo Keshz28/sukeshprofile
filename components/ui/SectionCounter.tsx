@@ -57,10 +57,14 @@ export default function SectionCounter() {
     el.style.animation = "numRoll .5s cubic-bezier(.16,1,.3,1) both";
   }, [idx]);
 
+  // Hidden over the hero (where it collided with the giant headline) and only
+  // shown once there's enough side margin to sit clear of the content.
+  if (idx === 0) return null;
+
   return (
     <div
       aria-hidden
-      className="fixed left-[clamp(12px,2.2vw,28px)] top-1/2 z-[65] hidden -translate-y-1/2 select-none flex-col items-start gap-1 text-white md:flex"
+      className="fixed left-[clamp(12px,2.2vw,28px)] top-1/2 z-[65] hidden -translate-y-1/2 select-none flex-col items-start gap-1 text-white xl:flex"
       style={{ mixBlendMode: "difference" }}
     >
       <div className="h-[1em] overflow-hidden">

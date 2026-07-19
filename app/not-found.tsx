@@ -1,11 +1,9 @@
-import Link from "next/link";
-
-export const metadata = {
-  title: "404 — Lost in space",
-};
-
 // E6 — a page that drifted out of the shipping lanes. Deliberately static and
 // dependency-free so it loads instantly even when the main bundle doesn't.
+//
+// NB: uses a plain <a>, not next/link. Importing next/link here made Turbopack
+// dev resolve "/" to this file instead of app/page.tsx — and a hard navigation
+// is what we want off a 404 anyway.
 export default function NotFound() {
   return (
     <main
@@ -50,12 +48,12 @@ export default function NotFound() {
           not even light, and evidently not this URL.
         </p>
 
-        <Link
+        <a
           href="/"
           className="mt-9 inline-flex items-center gap-2 rounded-[14px] bg-brand-gradient px-6 py-3.5 font-display text-[15px] font-bold text-ink transition-transform duration-200 hover:scale-[1.03]"
         >
           ← Return to orbit
-        </Link>
+        </a>
       </div>
     </main>
   );
