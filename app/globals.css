@@ -106,54 +106,9 @@ body {
     0 0 2px rgba(255, 247, 232, 0.4);
 }
 
-/* ── Theme swap via the View Transitions API ──────────────────────────────
-   Default: a slow, cinematic cross-dissolve. When html[data-vt] is set the
-   swap becomes directional, radiating from the toggle (--vt-x/--vt-y):
-     to-sun   → SUNBURST: the new light theme floods outward from the click,
-                like the sun igniting.
-     to-space → ECLIPSE: the old bright page collapses INTO the click point,
-                unveiling deep space that was behind it all along.          */
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation-duration: 0.65s;
-  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-@keyframes vt-expand {
-  from {
-    clip-path: circle(0px at var(--vt-x, 90vw) var(--vt-y, 32px));
-  }
-  to {
-    clip-path: circle(var(--vt-r, 150vmax) at var(--vt-x, 90vw) var(--vt-y, 32px));
-  }
-}
-@keyframes vt-contract {
-  from {
-    clip-path: circle(var(--vt-r, 150vmax) at var(--vt-x, 90vw) var(--vt-y, 32px));
-  }
-  to {
-    clip-path: circle(0px at var(--vt-x, 90vw) var(--vt-y, 32px));
-  }
-}
-
-/* Sunburst: old (space) sits still underneath; new (sun) expands over it. */
-html[data-vt="to-sun"]::view-transition-old(root) {
-  animation: none;
-}
-html[data-vt="to-sun"]::view-transition-new(root) {
-  animation: vt-expand 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-/* Eclipse: new (space) is revealed underneath; old (sun) shrinks away into
-   the toggle. The new snapshot must sit BELOW the old one, so invert the
-   default paint order for this direction. */
-html[data-vt="to-space"]::view-transition-new(root) {
-  animation: none;
-}
-html[data-vt="to-space"]::view-transition-old(root) {
-  animation: vt-contract 0.9s cubic-bezier(0.55, 0, 0.68, 0.19) both;
-  z-index: 1;
-}
+/* Theme swaps are handled by <ThemeTransition/> (a cheap GPU overlay) rather
+   than the View Transitions API — snapshotting the live WebGL canvas was the
+   source of the lag. */
 
 /* Custom selection */
 ::selection {
