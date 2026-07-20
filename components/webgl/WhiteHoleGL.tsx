@@ -49,18 +49,18 @@ function Sky() {
             float t = uTime*0.02;
             float n  = fbm(d*2.0 + vec3(t, t*0.5, 0.0));
             float n2 = fbm(d*4.3 - vec3(0.0, t*0.6, t));
-            vec3 cream = vec3(1.00, 0.972, 0.925);
-            vec3 gold  = vec3(0.99, 0.878, 0.706);
-            vec3 peach = vec3(0.98, 0.808, 0.667);
+            vec3 cream = vec3(0.98, 0.95, 0.90);
+            vec3 gold  = vec3(0.96, 0.86, 0.69);
+            vec3 peach = vec3(0.95, 0.79, 0.65);
             vec3 col = mix(cream, gold, smoothstep(0.35, 0.85, n));
             col = mix(col, peach, smoothstep(0.62, 1.0, n2) * 0.55);
 
-            // dark warm pocket around the hole direction
+            // big, deep warm pocket around the hole so the bright ring has a
+            // genuinely dark stage (bloom can't bleed cream back into it)
             float toHole = dot(d, normalize(uHole));
-            float dark = smoothstep(0.86, 0.996, toHole);
-            // faint distant stars appear inside the dark
-            float star = step(0.9975, hash(floor(d*260.0))) * dark;
-            vec3 deep = vec3(0.03, 0.028, 0.05) + star*vec3(0.8,0.85,1.0);
+            float dark = smoothstep(0.45, 0.93, toHole);
+            float star = step(0.9973, hash(floor(d*320.0))) * dark;
+            vec3 deep = vec3(0.010, 0.010, 0.022) + star*vec3(0.9,0.92,1.0);
             col = mix(col, deep, dark);
             gl_FragColor = vec4(col, 1.0);
           }
@@ -387,7 +387,7 @@ export default function WhiteHoleGL() {
         <WarpRig />
         <EffectComposer>
           <WhiteLens />
-          <Bloom intensity={0.85} luminanceThreshold={0.72} luminanceSmoothing={0.35} radius={0.8} mipmapBlur />
+          <Bloom intensity={0.6} luminanceThreshold={0.95} luminanceSmoothing={0.25} radius={0.55} mipmapBlur />
         </EffectComposer>
       </Canvas>
 
