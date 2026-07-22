@@ -55,12 +55,12 @@ function Sky() {
             vec3 col = mix(cream, gold, smoothstep(0.35, 0.85, n));
             col = mix(col, peach, smoothstep(0.62, 1.0, n2) * 0.55);
 
-            // big, deep warm pocket around the hole so the bright ring has a
-            // genuinely dark stage (bloom can't bleed cream back into it)
+            // a defined, deep porthole around the hole (tighter fade = less
+            // grey smudge) so the bright ring has a genuinely dark stage
             float toHole = dot(d, normalize(uHole));
-            float dark = smoothstep(0.45, 0.93, toHole);
-            float star = step(0.9973, hash(floor(d*320.0))) * dark;
-            vec3 deep = vec3(0.010, 0.010, 0.022) + star*vec3(0.9,0.92,1.0);
+            float dark = smoothstep(0.72, 0.95, toHole);
+            float star = step(0.9968, hash(floor(d*320.0))) * dark;
+            vec3 deep = vec3(0.005, 0.005, 0.014) + star*vec3(0.9,0.92,1.0);
             col = mix(col, deep, dark);
             gl_FragColor = vec4(col, 1.0);
           }
@@ -105,9 +105,10 @@ function WhiteHole() {
           precision highp float; varying vec3 vN; varying vec3 vView;
           void main(){
             float f = abs(dot(normalize(vN), normalize(vView))); // 1 centre → 0 rim
-            vec3 core = vec3(0.82, 0.85, 0.92);
-            vec3 rim  = vec3(0.16, 0.17, 0.24);
-            vec3 col = mix(rim, core, pow(f, 0.9));
+            // a soft blue-grey dome, like the reference's shadow sphere
+            vec3 core = vec3(0.40, 0.44, 0.55);
+            vec3 rim  = vec3(0.09, 0.10, 0.16);
+            vec3 col = mix(rim, core, pow(f, 1.1));
             gl_FragColor = vec4(col, 1.0);
           }
         `,
@@ -123,7 +124,7 @@ function WhiteHole() {
         depthWrite: false,
         blending: THREE.AdditiveBlending,
         side: THREE.DoubleSide,
-        uniforms: { uTime: { value: 0 }, uInner: { value: 1.15 }, uOuter: { value: 3.6 } },
+        uniforms: { uTime: { value: 0 }, uInner: { value: 1.15 }, uOuter: { value: 3.0 } },
         vertexShader: /* glsl */ `
           varying float vRad; varying float vAng;
           uniform float uInner; uniform float uOuter;
@@ -163,7 +164,7 @@ function WhiteHole() {
         depthWrite: false,
         blending: THREE.AdditiveBlending,
         side: THREE.DoubleSide,
-        uniforms: { uInner: { value: 1.02 }, uOuter: { value: 1.55 } },
+        uniforms: { uInner: { value: 1.0 }, uOuter: { value: 2.05 } },
         vertexShader: /* glsl */ `
           varying float vRad;
           uniform float uInner; uniform float uOuter;
@@ -176,10 +177,12 @@ function WhiteHole() {
           precision highp float; varying float vRad;
           void main(){
             float r = clamp(vRad, 0.0, 1.0);
-            // brightest at the inner edge (the photon ring), falling outward
-            float a = pow(1.0 - r, 1.6);
-            vec3 col = mix(vec3(1.0,0.9,0.62), vec3(1.0,0.99,0.96), 1.0 - r);
-            gl_FragColor = vec4(col * a * 2.6, a);
+            // a thick bright halo: a hot photon ring at the inner edge that
+            // falls off outward — the iconic wrap-around ring
+            float ring = smoothstep(0.0, 0.14, r) * pow(1.0 - r, 1.4);
+            float a = ring;
+            vec3 col = mix(vec3(1.0,0.86,0.55), vec3(1.0,0.99,0.97), pow(1.0 - r, 1.5));
+            gl_FragColor = vec4(col * a * 3.4, a);
           }
         `,
       }),
@@ -198,11 +201,11 @@ function WhiteHole() {
         <primitive object={sphereMat} attach="material" />
       </mesh>
       <mesh rotation={[1.36, 0, 0.22]} renderOrder={1}>
-        <ringGeometry args={[1.15, 3.6, 180, 1]} />
+        <ringGeometry args={[1.15, 3.0, 180, 1]} />
         <primitive object={diskMat} attach="material" />
       </mesh>
       <mesh ref={haloRef} renderOrder={2}>
-        <ringGeometry args={[1.02, 1.55, 128, 1]} />
+        <ringGeometry args={[1.0, 2.05, 160, 1]} />
         <primitive object={haloMat} attach="material" />
       </mesh>
     </group>
@@ -387,7 +390,7 @@ export default function WhiteHoleGL() {
         <WarpRig />
         <EffectComposer>
           <WhiteLens />
-          <Bloom intensity={0.6} luminanceThreshold={0.95} luminanceSmoothing={0.25} radius={0.55} mipmapBlur />
+          <Bloom intensity={0.75} luminanceThreshold={0.9} luminanceSmoothing={0.3} radius={0.5} mipmapBlur />
         </EffectComposer>
       </Canvas>
 
