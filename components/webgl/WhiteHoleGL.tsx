@@ -5,14 +5,18 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 
 /**
- * LIGHT MODE — THE WHITE HOLE (Gargantua silhouette, screen-space).
+ * LIGHT MODE — THE WHITE HOLE, raymarched at full scale.
  *
- * Drawn directly in 2-D rather than raymarched: a dark shadow, a crisp photon
- * ring, thick lensed arcs top & bottom (the disk wrapping over/under), and the
- * accretion disk streaking horizontally through — the iconic Ø shape. Every
- * feature is an explicit function of distance/angle from the hole centre, so
- * the result is fully predictable and cheap. Composited so the bright hole sits
- * in a soft dark pocket on the right while the cream page shows everywhere else.
+ * This is the immersive edge-on composition (the one that read as "large and
+ * dangerous"): the lensed disk sweeps across the right side of the viewport,
+ * bending over and under the shadow. Two artifacts from that version are
+ * fixed surgically:
+ *   · the vertical seam — the disk's turbulence sampled raw atan() angle,
+ *     which jumps at ±π; noise now samples periodic (cos,sin) space instead
+ *   · ring-shaped banding — steps were too coarse near the hole, quantising
+ *     the plane crossings into circles; steps are finer close in
+ * And the physics reads as a WHITE hole: band phases drift outward, so the
+ * disk visibly ejects matter instead of swallowing it.
  */
 
 const FRAG = /* glsl */ `
@@ -30,46 +34,92 @@ float noise(vec2 p){
 }
 float fbm(vec2 p){ float v=0.0,a=0.5; for(int i=0;i<4;i++){ v+=a*noise(p); p*=2.03; a*=0.5; } return v; }
 
+// silver-white → pale blue, like the reference stills
+vec3 diskColor(float t){
+  vec3 hot  = vec3(1.00, 1.00, 0.99);
+  vec3 mid  = vec3(0.88, 0.93, 1.00);
+  vec3 cool = vec3(0.62, 0.75, 0.98);
+  return mix(hot, mix(mid, cool, t), t);
+}
+
 void main(){
-  vec2 fc = gl_FragCoord.xy;
-  vec2 center = vec2(0.70*uRes.x, 0.47*uRes.y) + uPointer*vec2(20.0,15.0);
-  float R = 0.27 * uRes.y * (1.0 + uWarp*0.6);
+  vec2 uv = (gl_FragCoord.xy - 0.5*uRes) / uRes.y;
+  uv.x -= 0.26;
 
-  vec2 q = (fc - center) / R;
-  float r = length(q);
-  float ang = atan(q.y, q.x);
+  // nearly edge-on, just above the disk plane — the immersive framing
+  vec3 ro = vec3(uPointer.x*0.7, 1.5 + uPointer.y*0.5, -17.0);
+  vec3 ta = vec3(0.0);
+  vec3 ww = normalize(ta - ro);
+  vec3 uu = normalize(cross(vec3(0.0,1.0,0.0), ww));
+  vec3 vv = cross(ww, uu);
+  float fov = 1.7 + uWarp*0.8;
+  vec3 rd = normalize(uv.x*uu + uv.y*vv + fov*ww);
 
-  // dark shadow inside the ring
-  float shadow = smoothstep(1.00, 0.85, r);
+  const float Rs  = 1.7;    // event horizon
+  const float dIn = 2.9;    // disk inner edge
+  const float dOut= 11.5;   // disk outer edge
+  const float G   = 5.2;    // lensing strength
 
-  // crisp photon ring hugging the shadow
-  float ring = exp(-pow((r - 1.0)/0.085, 2.0));
+  vec3 pos = ro;
+  vec3 dir = rd;
+  vec3 acc = vec3(0.0);
+  float transmit = 1.0;
+  float minR = 1e9;
+  bool captured = false;
 
-  // lensed disk halo — brighter at top & bottom, where the disk wraps over/under
-  float tb = abs(sin(ang));
-  float halo = exp(-pow((r - 1.34)/0.44, 2.0)) * (0.4 + 1.0*tb);
+  for(int i=0;i<130;i++){
+    float r = length(pos);
+    minR = min(minR, r);
+    dir = normalize(dir - pos * (G / (r*r*r)) * 0.34);
+    // fine steps near the hole (kills ring banding), coarser far away
+    float step = 0.16 + r*0.05;
+    vec3 npos = pos + dir*step;
 
-  // accretion disk seen edge-on: a thin horizontal streak crossing through,
-  // extending well past the ring, with relativistic beaming on one side
-  float turb = 0.55 + 0.6*fbm(q*2.6 + vec2(uTime*0.12, ang));
-  float band = exp(-pow(q.y/0.12, 2.0)) * smoothstep(3.4, 0.9, r) * smoothstep(0.55, 1.0, r);
-  float dopp = 0.4 + 0.9*clamp(-cos(ang), 0.0, 1.0);
-  band *= (0.35 + dopp) * turb;
+    // disk lives in y = 0
+    if(pos.y * npos.y < 0.0){
+      float f = pos.y / (pos.y - npos.y);
+      vec3 hit = mix(pos, npos, f);
+      float hr = length(hit.xz);
+      if(hr > dIn && hr < dOut){
+        float t = (hr - dIn) / (dOut - dIn);
+        float ang = atan(hit.z, hit.x);
+        vec2 cs = vec2(cos(ang), sin(ang));            // periodic — no seam
+        // spiral bands whose phase moves OUTWARD: ejection, not accretion
+        float spir = 0.5 + 0.5*sin(ang*3.0 + hr*1.1 - uTime*1.6);
+        // turbulence in periodic space, drifting outward too
+        float turb = fbm(cs*2.3 + vec2(hr*0.9 - uTime*0.45, hr*0.7 - uTime*0.3));
+        float dopp = 0.45 + 0.9*clamp(cos(ang - 1.1), 0.0, 1.0);
+        float bright = (0.35 + 0.9*spir) * (0.45 + 0.95*turb) * dopp;
+        float dens = smoothstep(0.0, 0.06, t) * smoothstep(1.0, 0.7, t);
+        acc += transmit * diskColor(t) * bright * dens * 1.6;
+        transmit *= (1.0 - dens*0.55);
+      }
+    }
 
-  float emit = ring*2.4 + halo*1.15 + band*1.6;
+    pos = npos;
+    r = length(pos);
+    if(r < Rs){ captured = true; break; }
+    if(r > 70.0) break;
+  }
 
-  // silver-white, hottest at the ring
-  vec3 col = mix(vec3(0.70,0.82,1.0), vec3(1.0), clamp(emit*0.55, 0.0, 1.0)) * emit;
-  col = col / (col + 0.85) * 1.85;              // soft tone-map
+  vec3 col = acc;
 
-  // faint stars in the dark pocket
-  float st = smoothstep(0.9983, 1.0, hash(floor(fc*0.22)));
-  col += vec3(st) * smoothstep(1.15, 2.6, r) * 0.55;
+  // photon ring — rays grazing the horizon blaze into a thin Einstein ring
+  float photon = smoothstep(Rs*2.1, Rs*1.35, minR) * smoothstep(Rs*0.95, Rs*1.3, minR);
+  col += vec3(0.92, 0.96, 1.0) * photon * 2.2;
 
-  // composite: a soft dark stage disc around the hole; bright ring writes its
-  // own alpha, everything else stays clear so the cream page shows through
-  float dStage = distance(fc, center) / uRes.y;
-  float base = smoothstep(0.52, 0.18, dStage);
+  // stars where the ray escaped to the sky
+  if(!captured){
+    vec3 dn = normalize(dir);
+    float s = smoothstep(0.9975, 1.0, hash(floor(dn.xy*420.0)));
+    col += transmit * vec3(s);
+  }
+
+  col = col / (col + vec3(0.9)) * 1.9;   // soft tone-map, blooms to white
+
+  // composite: cream page on the left, deep space stage on the right
+  float sx = gl_FragCoord.x / uRes.x;
+  float base = smoothstep(0.16, 0.44, sx);
   float lum = dot(col, vec3(0.33));
   float alpha = clamp(max(base, lum*2.2), 0.0, 1.0);
 
@@ -152,7 +202,7 @@ export default function WhiteHoleGL() {
   return (
     <Canvas
       gl={{ antialias: false, alpha: true, powerPreference: "high-performance" }}
-      dpr={[1, 1.5]}
+      dpr={0.72}
       style={{
         position: "fixed",
         top: 0,
