@@ -47,31 +47,34 @@ void main(){
   vec2 uv = (gl_FragCoord.xy - 0.5*uRes) / uRes.y;
   uv.x -= 0.26;
 
-  // virtual camera — nearly edge-on, a touch above the disk plane
-  vec3 ro = vec3(uPointer.x*0.7, 1.5 + uPointer.y*0.5, -17.0);
+  // virtual camera — pulled back so the whole hole is a contained object,
+  // nearly edge-on with a slight tilt above the disk plane
+  vec3 ro = vec3(uPointer.x*0.6, 3.0 + uPointer.y*0.4, -30.0);
   vec3 ta = vec3(0.0, 0.0, 0.0);
   vec3 ww = normalize(ta - ro);
   vec3 uu = normalize(cross(vec3(0.0,1.0,0.0), ww));
   vec3 vv = cross(ww, uu);
-  float fov = 1.7 - uWarp*0.7;                 // warp jump zooms in
+  float fov = 1.7 + uWarp*0.8;                 // warp jump widens/streaks
   vec3 rd = normalize(uv.x*uu + uv.y*vv + fov*ww);
 
   const float Rs = 1.7;      // event-horizon radius
-  const float dIn = 2.9;     // disk inner
-  const float dOut = 11.5;   // disk outer
+  const float dIn = 2.6;     // disk inner
+  const float dOut = 8.5;    // disk outer
   const float G = 5.2;       // lensing strength
 
   vec3 pos = ro;
   vec3 dir = rd;
   vec3 acc = vec3(0.0);
   float transmit = 1.0;
+  float minR = 1e9;
   bool captured = false;
 
-  for(int i=0;i<90;i++){
+  for(int i=0;i<100;i++){
     float r = length(pos);
+    minR = min(minR, r);
     // bend the ray toward the hole (∝ 1/r²), stronger up close
     dir = normalize(dir - pos * (G / (r*r*r)) * 0.34);
-    float step = 0.42 + r*0.06;                // coarser far away → cheaper
+    float step = 0.34 + r*0.05;                // coarser far away → cheaper
     vec3 npos = pos + dir*step;
 
     // accretion disk lives in the y = 0 plane
@@ -105,6 +108,11 @@ void main(){
     float s = smoothstep(0.9975, 1.0, hash(floor(dn.xy*420.0)));
     col += transmit * vec3(s);
   }
+
+  // photon ring — rays that grazed close to the horizon glow into a thin,
+  // brilliant Einstein ring wrapping the shadow
+  float photon = smoothstep(Rs*2.2, Rs*1.35, minR) * smoothstep(Rs*0.9, Rs*1.35, minR);
+  col += vec3(0.85, 0.92, 1.0) * photon * 2.6;
 
   // gentle tone-map so the ring blooms to white without clipping harshly
   col = col / (col + vec3(0.9)) * 1.9;
