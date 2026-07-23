@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { profile } from "@/lib/data";
 import ThemeToggle from "./theme/ThemeToggle";
+import { LIGHT_MODE_ENABLED } from "./theme/useTheme";
 import { useClock } from "./ui/useClock";
 import MenuOverlay from "./ui/MenuOverlay";
 import SoundFX from "./ui/SoundFX";
@@ -113,7 +114,7 @@ export default function Navbar() {
             {clock}
           </span>
           <SoundFX />
-          <ThemeToggle />
+          {LIGHT_MODE_ENABLED && <ThemeToggle />}
 
           <button
             type="button"

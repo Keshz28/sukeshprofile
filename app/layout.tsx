@@ -67,7 +67,14 @@ export const viewport: Viewport = {
 };
 
 // Runs before paint so a saved "sun" theme never flashes deep-space first.
-const themeInit = `try{if(localStorage.getItem("kesh-theme")==="sun")document.documentElement.dataset.theme="sun"}catch(e){}`;
+// LIGHT_MODE_ENABLED is hardcoded here (not imported) since this string runs
+// pre-hydration; keep it in sync with components/theme/useTheme.ts. While
+// light mode is disabled this also scrubs any stale "sun" value so a past
+// visit can't silently re-enable it once the flag flips back on later.
+const LIGHT_MODE_ENABLED = false;
+const themeInit = LIGHT_MODE_ENABLED
+  ? `try{if(localStorage.getItem("kesh-theme")==="sun")document.documentElement.dataset.theme="sun"}catch(e){}`
+  : `try{localStorage.removeItem("kesh-theme")}catch(e){}`;
 
 export default function RootLayout({
   children,

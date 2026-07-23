@@ -7,7 +7,16 @@ export type Theme = "space" | "sun";
 export const THEME_KEY = "kesh-theme";
 export const FLIP_EVENT = "kesh:themeflip";
 
+/**
+ * Light mode ("sun") is temporarily disabled — the white-hole visual isn't
+ * ready to ship. Flip this back to `true` once its replacement (a video
+ * background) is in, and the toggle / transition / persisted preference all
+ * come back online with no other changes needed.
+ */
+export const LIGHT_MODE_ENABLED = false;
+
 export function getTheme(): Theme {
+  if (!LIGHT_MODE_ENABLED) return "space";
   if (typeof document === "undefined") return "space";
   return document.documentElement.dataset.theme === "sun" ? "sun" : "space";
 }
@@ -15,6 +24,7 @@ export function getTheme(): Theme {
 /** Raw DOM + storage swap, no animation. Called by ThemeTransition at the
  *  moment the cover is fully closed, so the heavy WebGL scene swap is hidden. */
 export function applyTheme(theme: Theme) {
+  if (!LIGHT_MODE_ENABLED) theme = "space";
   const root = document.documentElement;
   if (theme === "sun") root.dataset.theme = "sun";
   else delete root.dataset.theme;
@@ -32,6 +42,7 @@ export function applyTheme(theme: Theme) {
  * the screen is covered, then reveals. Reduced-motion / SSR swap instantly.
  */
 export function setTheme(theme: Theme, origin?: { x: number; y: number }) {
+  if (!LIGHT_MODE_ENABLED) return;
   if (
     typeof window === "undefined" ||
     window.matchMedia("(prefers-reduced-motion: reduce)").matches
